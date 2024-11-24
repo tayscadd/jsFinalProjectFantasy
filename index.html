@@ -13,8 +13,24 @@
     </header>
     <main>
         <div class="" id="characterDisplay">
-            <img src="" alt="">
+            <h2 id="characterName"></h2>
+            <p id="characterLevel"></p>
+            <img src="" alt="" id="characterImage">
+            <p id="characterDescription"></p>
+            <div class="stats">
+                <p>Strength: <span id="characterStrength"></span></p>
+                <p>Dexterity: <span id="characterDex"></span></p>
+                <p>Speed: <span id="characterSpeed"></span></p>
+                <p>Agility: <span id="characterAgility"></span></p>
+                <p>Constitution: <span id="characterConstitution"></span></p>
+                <p>Intelligence: <span id="characterIntelligence"></span></p>
+                <p>Magic: <span id="characterMagic"></span></p>
+                <p>Luck: <span id="characterLuck"></span></p>
+                <p>Wisdom: <span id="characterWisdom"></span></p>
+                <p>Charisma: <span id="characterCharisma"></span></p>
+            </div>
         </div>
+        <button type="button" onclick="updateCharacterPageRandom()">Generate New Character</button>
     </main>
     <footer>
 

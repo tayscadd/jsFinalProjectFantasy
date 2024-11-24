@@ -2,16 +2,20 @@
 // Classes
 ////////////////////////////////////
 class Job {
-    constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck) {
+    constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck, avg_wisdom, avg_dex, avg_charisma, avg_constitution) {
         this.name = name;
         this.desc = desc;
         this.stat_variability = stat_variability;
         this.avg_strength = avg_strength;
         this.avg_intelligence = avg_intelligence;
+        this.avg_wisdom = avg_wisdom;
         this.avg_agility = avg_agility;
         this.avg_speed = avg_speed;
+        this.avg_dex = avg_dex;
         this.avg_magic = avg_magic;
         this.avg_luck = avg_luck;
+        this.avg_charisma = avg_charisma;
+        this.avg_constitution = avg_constitution;
     }
 
     changeStat(stat, value) {
@@ -19,16 +23,20 @@ class Job {
     }
 }
 class Species {
-    constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck) {
+    constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck, avg_wisdom, avg_dex, avg_charisma, avg_constitution) {
         this.name = name;
         this.desc = desc;
         this.stat_variability = stat_variability;
         this.avg_strength = avg_strength;
         this.avg_intelligence = avg_intelligence;
+        this.avg_wisdom = avg_wisdom;
         this.avg_agility = avg_agility;
         this.avg_speed = avg_speed;
+        this.avg_dex = avg_dex;
         this.avg_magic = avg_magic;
         this.avg_luck = avg_luck;
+        this.avg_charisma = avg_charisma;
+        this.avg_constitution = avg_constitution;
     }
 
     changeStat(stat, value) {
@@ -43,10 +51,14 @@ class Character {
         this.name = name;
         this.strength = this.setStat("strength", this.job, this.species);
         this.intelligence = this.setStat("intelligence", this.job, this.species);
+        this.wisdom = this.setStat("wisdom", this.job, this.species);
         this.agility = this.setStat("agility", this.job, this.species);
         this.speed = this.setStat("speed", this.job, this.species);
         this.magic = this.setStat("magic", this.job, this.species);
         this.luck = this.setStat("luck", this.job, this.species);
+        this.dex = this.setStat("dex", this.job, this.species);
+        this.charisma = this.setStat("charisma", this.job, this.species);
+        this.constitution = this.setStat("constitution", this.job, this.species);
         this.level = mathRandom(0,10);
     }
 
@@ -67,12 +79,12 @@ class Character {
 // Default Data
 ////////////////////////////////////
 let JOBS = [
-    new Job("Warrior", "Warriors are known for their strength and agility.", 6, 18, 7, 12, 10, 0, 5),
-    new Job("Wizard", "Wizards are knowm for their intelligence and magic.", 6, 3, 12, 4, 3, 16, 0)
+    new Job("Warrior", "Warriors are known for their strength and agility.", 6, 18, 7, 12, 10, 0, 5, 6, 12, 10, 12),
+    new Job("Wizard", "Wizards are knowm for their intelligence and magic.", 6, 3, 12, 4, 3, 16, 0, 11, 4, 8, 6),
 ]
 let SPECIES = [
-    new Species("Human", "Humans are recarded as strong warriors who are able to adapt to any situation.", 6, 14, 8, 8, 5, 5, 5),
-    new Species("Elf", "Elves are known for their agility, speed, and magic.", 6, 3, 12, 14, 11, 11, 2)
+    new Species("Human", "Humans are recarded as strong warriors who are able to adapt to any situation.", 6, 14, 8, 8, 5, 5, 5, 12, 9, 8, 10),
+    new Species("Elf", "Elves are known for their agility, speed, and magic.", 6, 3, 12, 14, 11, 11, 2, 8, 14, 6, 8),
 ]
 let CHARACTERS = []
 let FIRSTNAMES = [
@@ -164,13 +176,33 @@ function generateRandomCharacter() {
     return newCharacter;
 }
 
-console.log(generateRandomCharacter());
+function updateCharacterPage(character) {
+    document.querySelector('#characterName').innerHTML = `${character.name}, a ${character.species.name} ${character.job.name}`;
+    document.querySelector('#characterStrength').innerHTML = character.strength;
+    document.querySelector('#characterIntelligence').innerHTML = character.intelligence;
+    document.querySelector('#characterWisdom').innerHTML = character.wisdom;
+    document.querySelector('#characterAgility').innerHTML = character.agility;
+    document.querySelector('#characterSpeed').innerHTML = character.speed;
+    document.querySelector('#characterDex').innerHTML = character.dex;
+    document.querySelector('#characterMagic').innerHTML = character.magic;
+    document.querySelector('#characterLuck').innerHTML = character.luck;
+    document.querySelector('#characterCharisma').innerHTML = character.charisma;
+    document.querySelector('#characterConstitution').innerHTML = character.constitution;
+    document.querySelector('#characterLevel').innerHTML = `lvl ${character.level}`;
+}
 
-// Just for now, randomly generates an image for all images.
-const img = document.querySelectorAll('img');
-img.forEach((el) => {
+function updateCharacterPageRandom() {
+    let character = generateRandomCharacter();
+    updateCharacterPage(character);
+    updateCharacterImage();
+}
+
+function updateCharacterImage() {
     let randomNum = mathRandom(1, 110);
     let url = `./media/images/characterPhoto (${randomNum}).jpeg`;
     url = encodeURIComponent(url);
-    el.src = url
-});
+    document.getElementById('characterImage').src = url;
+}
+
+
+console.log(generateRandomCharacter());
