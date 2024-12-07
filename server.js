@@ -18,15 +18,14 @@ app.use(express.static('public'));
 app.get('/api', (req, res) => {
     logRequest('GET', '/api');
     res.send({ serverResponse: '<p>Hello from the Server!</p>' });
-    confirmResponse();
+    confirmResponse('GET', '/api');
 });
 
 app.get('/get/mediafiles', async (req, res) => {
     logRequest('GET', '/get/mediafiles');
     const mediaFiles = await getMediaFiles();
-    console.log(mediaFiles)
     res.send({ mediaFiles });
-    confirmResponse();
+    confirmResponse('GET', '/get/mediafiles');
 });
 
 
