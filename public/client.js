@@ -1,3 +1,23 @@
+let dropPoint = document.querySelector('#loadDataHere');
+const baseURL = 'http://localhost:5500';
+
+async function fetchData() {
+    let response = await fetch(`${baseURL}/api`).then(res => res.json());
+    console.log("[Response]:\n", response)
+    return response.serverResponse;
+}
+
+async function renderData() {
+    console.log(`Getting Data from ${baseURL}/api`)
+    let data = await fetchData();
+    console.log('Adding it to the DOM')
+    dropPoint.innerHTML = data;
+}
+
+renderData();
+
+
+
 /////////////////
 // Classes
 ////////////////////////////////////
