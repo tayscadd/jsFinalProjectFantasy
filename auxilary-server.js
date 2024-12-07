@@ -90,17 +90,17 @@ class Character {
         this.species = parameters.species;
         this.name = name;
         this.image = parameters.image;
-        this.strength = this.setStat("strength", this.job, this.species);
-        this.intelligence = this.setStat("intelligence", this.job, this.species);
-        this.wisdom = this.setStat("wisdom", this.job, this.species);
-        this.agility = this.setStat("agility", this.job, this.species);
-        this.speed = this.setStat("speed", this.job, this.species);
-        this.magic = this.setStat("magic", this.job, this.species);
-        this.luck = this.setStat("luck", this.job, this.species);
-        this.dex = this.setStat("dex", this.job, this.species);
-        this.charisma = this.setStat("charisma", this.job, this.species);
-        this.constitution = this.setStat("constitution", this.job, this.species);
         this.level = mathRandom(0,10);
+        this.strength = this.setStat("strength", this.job, this.species) + this.level;
+        this.intelligence = this.setStat("intelligence", this.job, this.species) + this.level;
+        this.wisdom = this.setStat("wisdom", this.job, this.species) + this.level;
+        this.agility = this.setStat("agility", this.job, this.species) + this.level;
+        this.speed = this.setStat("speed", this.job, this.species) + this.level;
+        this.magic = this.setStat("magic", this.job, this.species) + this.level;
+        this.luck = this.setStat("luck", this.job, this.species) + this.level;
+        this.dex = this.setStat("dex", this.job, this.species) + this.level;
+        this.charisma = this.setStat("charisma", this.job, this.species) + this.level;
+        this.constitution = this.setStat("constitution", this.job, this.species) + this.level;
         console.log(parameters.image != undefined)
     }
 
