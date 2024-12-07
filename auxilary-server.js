@@ -1,6 +1,6 @@
 const fs = require('fs/promises');
 const path = require('path');
-const mediaDirectoryPath = path.join(__dirname, 'media/images');
+const mediaDirectoryPath = path.join(__dirname, 'public/media/images');
 
 
 /// Server Related Stuff
@@ -108,7 +108,7 @@ class Character {
     static async create(parameters, name) {
         if (parameters.image == undefined) {
             let url = await getMediaFiles().then(res => res[mathRandom(0, res.length)]);
-            parameters.image = url;
+            parameters.image = `${url}`;
         }
         return new Character(parameters, name);
     }

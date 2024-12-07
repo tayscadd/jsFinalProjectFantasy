@@ -3,7 +3,6 @@ const baseURL = 'http://localhost:5500';
 
 async function fetchMediaDataFromServer() {
     let response = await fetch(`${baseURL}/get/mediafiles`).then(res => res.json());
-    console.log("[Response]:\n", response)
     return response.serverResponse;
 }
 
@@ -17,7 +16,6 @@ async function renderDataToDOM() {
 async function getNewCharacterFromServer() {
     console.log(`Getting Data from ${baseURL}/get/newcharacter`)
     let response = await fetch(`${baseURL}/get/newcharacter`).then(res => res.json());
-    console.log("[Response]:\n", response)
     return response.character;
 }
 
@@ -36,15 +34,10 @@ function updateCharacterSheet(character) {
     document.querySelector('#characterCharisma').innerHTML = character.charisma;
     document.querySelector('#characterConstitution').innerHTML = character.constitution;
     document.querySelector('#characterLevel').innerHTML = `lvl ${character.level}`;
+    document.querySelector('#characterImage').src = `${baseURL}/media/images/${character.image}`;
 }
 async function updateCharacterSheetWithRandomData() {
     let character = await getNewCharacterFromServer();
     updateCharacterSheet(character);
-    //updateCharacterImage();
-}
-function updateCharacterImage() {
-    let randomNum = mathRandom(1, 110);
-    let url = `./media/images/characterPhoto (${randomNum}).jpeg`;
-    url = encodeURIComponent(url);
-    document.getElementById('characterImage').src = url;
+    console.log('Updated Character Sheet!')
 }
