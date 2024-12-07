@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -19,10 +19,10 @@
             <div class="leftside">
                 <div class="imageFrame">
                     <div class="borderbackground"></div>
-                    <img src="" alt="" id="characterImage" />
+                    <img src="./media/Default.jpg" alt="" id="characterImage" />
                 </div>
                 <div class="stats">
-                    <div class="borderbackground"></div>
+                    <div class="borderbackground background-wood"></div>
                     <div class="statBox text-fantasy">
                         <p>Strength: <span id="characterStrength"></span></p>
                         <p>Dexterity: <span id="characterDex"></span></p>
@@ -40,10 +40,17 @@
                     <button class="text-fantasy" type="button" onclick="updateCharacterSheetWithRandomData()">Generate New Character</button>
                 </div>
             </div>
-            <div class="rightside">
-                <h2 id="characterName"></h2>
-                <p id="characterLevel"></p>
+            <div class="middle">
+                <div class="borderbackground"></div>
+                <div class="header">
+                    <h2 class='text-fantasy' id="characterName">Name</h2>
+                    <p class='text-fantasy tag' id="characterLevel">lvl 0</p>
+                    <p class="text-fantasy tag" id="characterClass">Unknown</p>
+                </div>
                 <p id="characterDescription"></p>
+            </div>
+            <div class="rightside">
+                <div class="borderbackground"></div>
             </div>
         </div>
     </main>

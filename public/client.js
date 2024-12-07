@@ -22,8 +22,9 @@ async function getNewCharacterFromServer() {
 
 
 function updateCharacterSheet(character) {
-    document.querySelector('#characterName').innerHTML = `${character.name}, a ${character.species.name} ${character.job.name}`;
+    document.querySelector('#characterName').innerHTML = `${character.name}`;
     document.querySelector('#characterStrength').innerHTML = character.strength;
+    document.querySelector('#characterClass').innerHTML = `${character.species.name} ${character.job.name}`;
     document.querySelector('#characterIntelligence').innerHTML = character.intelligence;
     document.querySelector('#characterWisdom').innerHTML = character.wisdom;
     document.querySelector('#characterAgility').innerHTML = character.agility;
