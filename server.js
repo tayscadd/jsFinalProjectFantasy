@@ -28,9 +28,9 @@ app.get('/get/mediafiles', async (req, res) => {
     confirmResponse('GET', '/get/mediafiles');
 });
 
-app.get('/get/newcharacter', (req, res) => {
+app.get('/get/newcharacter', async (req, res) => {
     logRequest('GET', '/get/newcharacter');
-    const character = generateRandomCharacter();
+    const character = await generateRandomCharacter();
     res.send({ character });
     confirmResponse('GET', '/get/newcharacter');
 })

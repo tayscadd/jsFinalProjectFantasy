@@ -89,7 +89,7 @@ class Character {
         this.job = parameters.job;
         this.species = parameters.species;
         this.name = name;
-        this.image = parameters.image ? parameters.image : this.getRandomImage();
+        this.image = parameters.image;
         this.strength = this.setStat("strength", this.job, this.species);
         this.intelligence = this.setStat("intelligence", this.job, this.species);
         this.wisdom = this.setStat("wisdom", this.job, this.species);
@@ -101,6 +101,16 @@ class Character {
         this.charisma = this.setStat("charisma", this.job, this.species);
         this.constitution = this.setStat("constitution", this.job, this.species);
         this.level = mathRandom(0,10);
+        console.log(parameters.image != undefined)
+    }
+
+    // Lets me use asycnc to get a random image. By calling the Character.create() method, I can get a random image if the parameters don't have one specified.
+    static async create(parameters, name) {
+        if (parameters.image == undefined) {
+            let url = await getMediaFiles().then(res => res[mathRandom(0, res.length)]);
+            parameters.image = url;
+        }
+        return new Character(parameters, name);
     }
 
     setStat(stat, job, species) {
@@ -113,13 +123,6 @@ class Character {
             return 0;
         }
         return VALUE;
-    }
-
-    getRandomImage() {
-        let options = getMediaFiles();
-        let randomNum = mathRandom(0, options.length);
-        let url = options[randomNum];
-        return url;
     }
 }
 
@@ -215,18 +218,17 @@ function mathRandom(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function generateRandomCharacter() {
+async function generateRandomCharacter() {
     let newJob = JOBS[mathRandom(0,JOBS.length)];
     let newSpecies = SPECIES[mathRandom(0,SPECIES.length)];
     let newName = `${FIRSTNAMES[mathRandom(0,FIRSTNAMES.length)]} ${LASTNAMES[mathRandom(0,LASTNAMES.length)]}`;
-    let newCharacter = new Character({job: newJob, species: newSpecies}, newName);
+    let newCharacter = await Character.create({job: newJob, species: newSpecies}, newName);
     CHARACTERS.push(newCharacter);
     return newCharacter;
 }
 
-function updateCharacterPageRandom() {
-    let character = generateRandomCharacter();
-    let 
+async function updateCharacterPageRandom() {
+    let character = await generateRandomCharacter();
 }
 
 function updateCharacterImage() {
