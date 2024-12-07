@@ -2,7 +2,7 @@ let dropPoint = document.querySelector('#loadDataHere');
 const baseURL = 'http://localhost:5500';
 
 async function fetchData() {
-    let response = await fetch(`${baseURL}/api`).then(res => res.json());
+    let response = await fetch(`${baseURL}/get/mediafiles`).then(res => res.json());
     console.log("[Response]:\n", response)
     return response.serverResponse;
 }
