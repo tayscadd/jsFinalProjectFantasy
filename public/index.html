@@ -6,31 +6,46 @@
     <title>Fantasy Character Creator</title>
     <script src="./client.js" defer></script>
     <link rel="stylesheet" href="./index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <h1>Fantasy Character Creator</h1>
     </header>
     <main>
-        <div class="" id="characterDisplay">
-            <h2 id="characterName"></h2>
-            <p id="characterLevel"></p>
-            <img src="" alt="" id="characterImage">
-            <p id="characterDescription"></p>
-            <div class="stats">
-                <p>Strength: <span id="characterStrength"></span></p>
-                <p>Dexterity: <span id="characterDex"></span></p>
-                <p>Speed: <span id="characterSpeed"></span></p>
-                <p>Agility: <span id="characterAgility"></span></p>
-                <p>Constitution: <span id="characterConstitution"></span></p>
-                <p>Intelligence: <span id="characterIntelligence"></span></p>
-                <p>Magic: <span id="characterMagic"></span></p>
-                <p>Luck: <span id="characterLuck"></span></p>
-                <p>Wisdom: <span id="characterWisdom"></span></p>
-                <p>Charisma: <span id="characterCharisma"></span></p>
+        <div class="characterSheet" id="characterDisplay">
+            <div class="leftside">
+                <div class="imageFrame">
+                    <div class="borderbackground"></div>
+                    <img src="" alt="" id="characterImage" />
+                </div>
+                <div class="stats">
+                    <div class="borderbackground"></div>
+                    <div class="statBox text-fantasy">
+                        <p>Strength: <span id="characterStrength"></span></p>
+                        <p>Dexterity: <span id="characterDex"></span></p>
+                        <p>Speed: <span id="characterSpeed"></span></p>
+                        <p>Agility: <span id="characterAgility"></span></p>
+                        <p>Constitution: <span id="characterConstitution"></span></p>
+                        <p>Intelligence: <span id="characterIntelligence"></span></p>
+                        <p>Magic: <span id="characterMagic"></span></p>
+                        <p>Luck: <span id="characterLuck"></span></p>
+                        <p>Wisdom: <span id="characterWisdom"></span></p>
+                        <p>Charisma: <span id="characterCharisma"></span></p>
+                    </div>
+                </div>
+                <div class="newCharacterBtnDiv">
+                    <button class="text-fantasy" type="button" onclick="updateCharacterSheetWithRandomData()">Generate New Character</button>
+                </div>
+            </div>
+            <div class="rightside">
+                <h2 id="characterName"></h2>
+                <p id="characterLevel"></p>
+                <p id="characterDescription"></p>
             </div>
         </div>
-        <button type="button" onclick="updateCharacterSheetWithRandomData()">Generate New Character</button>
     </main>
     <footer>
 
