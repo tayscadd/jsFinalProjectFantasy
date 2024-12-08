@@ -42,3 +42,4 @@ async function updateCharacterSheetWithRandomData() {
     updateCharacterSheet(character);
     console.log('Updated Character Sheet!')
 }
+updateCharacterSheetWithRandomData()

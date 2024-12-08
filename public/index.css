@@ -6,9 +6,10 @@ html * {
 
 /*CHARACTER SHEET*/
 .characterSheet {
-    --_-left-width: 200;
+    --_-left-width: 250;
     --_-left-padding: 4;
     --_-middle-padding: 4;
+    max-width: 800px;
     display: grid;
     grid-template-columns: calc((var(--_-left-width) * 1px) + (var(--_-left-padding) * 2px)) 2fr 1fr;
     gap: calc(var(--_-middle-padding) * 1px);
@@ -21,6 +22,17 @@ html * {
 }
 
 /*GENERAL USE*/
+.tag {
+    font-size: .8rem;
+    background-color: #FFF;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 9999px;
+    padding: 2px 8px;
+}
+.tag span {
+    color: #000;
+}
 .borderbackground {
     background-image: var(--_-light-wood);
     background-repeat: repeat;
@@ -89,13 +101,24 @@ html * {
   .5rem -.6rem .8rem .5rem rgba(255,255,255, .1);
     position: relative;
     color: black;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: calc(var(--_-padding) * 1px);
+}
+.statBox .tag {
+    width: calc((var(--statBox-width) - var(--_-padding) * 1px) / 2 - (var(--_-padding) * 3px));
+    display: grid;
+    grid-template-columns: 1fr max-content;
+}
+.statBox span {
+    padding-right: 6px;
 }
 .statBox p {
     margin: 0;
-    padding: 0;
+    padding: calc(var(--_-padding) * 1px);
 }
-/*newCharacterBtnDiv*/
-.newCharacterBtnDiv {
+/*btn-default-container*/
+.btn-default-container {
     position: relative;
     width: calc((var(--_-left-width) * 1px) + (var(--_-left-padding) * 2px));
 
@@ -109,7 +132,22 @@ html * {
     background-size: cover;
     transition: height 0.3s;
 }
-.newCharacterBtnDiv button {
+.btn-default {
+    --local-height: 44px;
+    height: var(--local-height);
+    position: relative;
+    width: calc((var(--_-left-width) * 1px) + (var(--_-left-padding) * 2px));
+    background-image: var(--_-light-wood) !important;
+    background-repeat: repeat;
+    background-size: cover;
+    transition: height 0.3s;
+    background: none;
+    border: none;
+    color: white;
+    width: 100%;
+    cursor: pointer;
+}
+.btn-default-container button {
     background: none;
     border: none;
     color: white;
@@ -117,7 +155,7 @@ html * {
     height: 100%;
     cursor: pointer;
 }
-.newCharacterBtnDiv:hover {
+.btn-default-container:hover, .btn-default:hover {
     height: calc(var(--local-height) + 4px);
 }
 
@@ -134,27 +172,32 @@ html * {
 }
 .middle .header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: calc(var(--_-padding) * 4px);
+    gap: calc(var(--_-padding) * 2px);
 }
-.middle .header * {
+.middle .header div {
+    display: flex;
+    flex-direction: row;
+    gap: calc(var(--_-padding) * 2px);
+}
+.middle .header h2 {
     font-size: 1.5rem;
     font-weight: 400;
     margin: 0;
     padding: 0;
 }
-.middle .tag {
-    font-size: .8rem;
-    background-color: #FFF;
-    color: #000;
-    border: 1px solid #000;
-    border-radius: 9999px;
-    padding: 2px 8px;
+.middle .header p {
+    margin: 0;
 }
 
 /*RIGHT SIDE*/
 .rightside {
     position: relative;
+    --_-padding: var(--_-middle-padding);
+    padding: calc(var(--_-padding) * 2px);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--_-padding) * 1px);
 }

@@ -24,19 +24,19 @@
                 <div class="stats">
                     <div class="borderbackground background-wood"></div>
                     <div class="statBox text-fantasy">
-                        <p>Strength: <span id="characterStrength"></span></p>
-                        <p>Dexterity: <span id="characterDex"></span></p>
-                        <p>Speed: <span id="characterSpeed"></span></p>
-                        <p>Agility: <span id="characterAgility"></span></p>
-                        <p>Constitution: <span id="characterConstitution"></span></p>
-                        <p>Intelligence: <span id="characterIntelligence"></span></p>
-                        <p>Magic: <span id="characterMagic"></span></p>
-                        <p>Luck: <span id="characterLuck"></span></p>
-                        <p>Wisdom: <span id="characterWisdom"></span></p>
-                        <p>Charisma: <span id="characterCharisma"></span></p>
+                        <p class="tag">Strength: <span id="characterStrength"></span></p>
+                        <p class="tag">Dexterity: <span id="characterDex"></span></p>
+                        <p class="tag">Speed: <span id="characterSpeed"></span></p>
+                        <p class="tag">Agility: <span id="characterAgility"></span></p>
+                        <p class="tag">Constitution: <span id="characterConstitution"></span></p>
+                        <p class="tag">Intelligence: <span id="characterIntelligence"></span></p>
+                        <p class="tag">Magic: <span id="characterMagic"></span></p>
+                        <p class="tag">Luck: <span id="characterLuck"></span></p>
+                        <p class="tag">Wisdom: <span id="characterWisdom"></span></p>
+                        <p class="tag">Charisma: <span id="characterCharisma"></span></p>
                     </div>
                 </div>
-                <div class="newCharacterBtnDiv">
+                <div class="btn-default-container">
                     <button class="text-fantasy" type="button" onclick="updateCharacterSheetWithRandomData()">Generate New Character</button>
                 </div>
             </div>
@@ -44,13 +44,19 @@
                 <div class="borderbackground"></div>
                 <div class="header">
                     <h2 class='text-fantasy' id="characterName">Name</h2>
-                    <p class='text-fantasy tag' id="characterLevel">lvl 0</p>
-                    <p class="text-fantasy tag" id="characterClass">Unknown</p>
+                    <div>
+                        <p class='text-fantasy tag' id="characterLevel">lvl 0</p>
+                        <p class="text-fantasy tag" id="characterClass">Unknown</p>
+                    </div>
                 </div>
                 <p id="characterDescription"></p>
             </div>
             <div class="rightside">
                 <div class="borderbackground"></div>
+                <button class="btn-default text-fantasy">Edit Character</button>
+                <button class="btn-default text-fantasy">Edit Classes</button>
+                <button class="btn-default text-fantasy">Edit Species</button>
+                <button class="btn-default text-fantasy">Characters</button>
             </div>
         </div>
     </main>
