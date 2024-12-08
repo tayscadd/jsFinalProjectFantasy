@@ -31,6 +31,7 @@ app.get('/get/mediafiles', async (req, res) => {
 app.get('/get/newcharacter', async (req, res) => {
     logRequest('GET', '/get/newcharacter');
     const character = await generateRandomCharacter();
+    console.log(`${character.name}, the ${character.species.name} ${character.job.name}. (ID: ${character.id})`);
     res.send({ character });
     confirmResponse('GET', '/get/newcharacter');
 })

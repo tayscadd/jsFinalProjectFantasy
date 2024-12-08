@@ -85,7 +85,8 @@ class Species {
 }
 class Character {
     constructor(parameters, name) {
-        console.log(`${name}, the ${parameters.species.name} ${parameters.job.name}.`);
+        this.id = CHARACTER_ID;
+        CHARACTER_ID++;
         this.job = parameters.job;
         this.species = parameters.species;
         this.name = name;
@@ -101,7 +102,6 @@ class Character {
         this.dex = this.setStat("dex", this.job, this.species) + this.level;
         this.charisma = this.setStat("charisma", this.job, this.species) + this.level;
         this.constitution = this.setStat("constitution", this.job, this.species) + this.level;
-        console.log(parameters.image != undefined)
     }
 
     // Lets me use asycnc to get a random image. By calling the Character.create() method, I can get a random image if the parameters don't have one specified.
@@ -210,7 +210,7 @@ let LASTNAMES = [
     "Solomon", "Cohen", "Pacheco",
     "Watson", "Orozco", "Brock",
 ]
-
+let CHARACTER_ID = (CHARACTERS.length > 0) ? CHARACTERS.length + 1 : 0;
 /////////////////
 // Functions
 ////////////////////////////////////
@@ -225,17 +225,6 @@ async function generateRandomCharacter() {
     let newCharacter = await Character.create({job: newJob, species: newSpecies}, newName);
     CHARACTERS.push(newCharacter);
     return newCharacter;
-}
-
-async function updateCharacterPageRandom() {
-    let character = await generateRandomCharacter();
-}
-
-function updateCharacterImage() {
-    let randomNum = mathRandom(1, 110);
-    let url = `./media/images/characterPhoto (${randomNum}).jpeg`;
-    url = encodeURIComponent(url);
-    document.getElementById('characterImage').src = url;
 }
 
 module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter }; 
