@@ -6,6 +6,17 @@ let CURRENTCHARACTER = null;
 /////
 // Stuff having to do with talking to the server
 
+//Just puts a comment in the server terminal to help debug.
+async function logRequest(message) {
+    let options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ msg: message })
+    }
+    let res = await fetch(`${baseURL}/log`, options)
+}
 // Gets a list of media files from the server (character photos)
 async function getMediaDataFromServer() {
     let response = await fetch(`${baseURL}/get/mediafiles`).then(res => res.json());
@@ -15,6 +26,9 @@ async function getMediaDataFromServer() {
 async function getNewCharacterFromServer() {
     console.log(`Getting Data from ${baseURL}/get/newcharacter`)
     let response = await fetch(`${baseURL}/get/newcharacter`).then(res => res.json());
+    response.character.job.name = response.character.job.name.replaceAll('_', ' ');
+    response.character.species.name = response.character.species.name.replaceAll('_', ' ');
+    response.character.name = response.character.name.replaceAll('_', ' ');
     return response.character;
 }
 // Gets a list of character classes from the server.
@@ -58,10 +72,29 @@ async function updateJob(job) {
         },
         body: JSON.stringify({ JOB: job })
     }
-    let response = await fetch(`${baseURL}/put/class/`, options)
+    let response = await fetch(`${baseURL}/put/class/update`, options)
     .then(res => {
         if (!res.ok) {
             throw new Error('Failed to update class');
+        }
+        editClasses();
+    }).catch(err => {
+        console.error(err);
+    });
+}
+async function createJob(job) {
+    console.log('Adding Class: ', job);
+    let options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ JOB: job })
+    }
+    let response = await fetch(`${baseURL}/put/class/create`, options)
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Failed to create class');
         }
         editClasses();
     }).catch(err => {
@@ -169,6 +202,10 @@ const clearClassPrompt = () => {
         classPrompt.querySelectorAll('.tag').forEach(tag => {
             tag.removeEventListener('click', editingState_Class);
         });
+        classPrompt.querySelector('h4 input').removeEventListener('click', (e) => {
+            e.target.value = '';
+            e.target.focus();
+        });
         classPrompt.remove();
     }
 }
@@ -183,7 +220,7 @@ const newClassPrompt = () => {
         li.classList.add(...['editItem', 'newClass']);
         function createClassPrompt() {
             return `
-        <h4><input type='text' value='newClass' id='edit-newClass'></h4>
+        <h4><input type='text' value='Click to change the Class Name' id='edit-newClass'></h4>
         <div>
             <span class='smallheader'>Class Description</span>
             <span class='newClass class-desc'><textarea class="text-fantasy" id="edit-newClass">newClass Desc</textarea></span>
@@ -196,13 +233,17 @@ const newClassPrompt = () => {
         </div>
         <div class="controls">
             <button onclick='deleteClass("newClass")'>Cancel</button>
-            <button onclick='saveClassChanges("newClass", "true")' class="savebtn">Add Class</button>
+            <button onclick='saveNewClass()' class="savebtn">Add Class</button>
         </div>`
         }
         li.innerHTML = createClassPrompt();
         newClassContainer.insertBefore(li, newClassContainer.firstChild);
         li.querySelectorAll('.tag').forEach(tag => {
             tag.addEventListener('click', editingState_Class);
+        });
+        li.querySelector('h4 input').addEventListener('click', (e) => {
+            e.target.value = '';
+            e.target.focus();
         });
     }
 }
@@ -304,21 +345,46 @@ const editingState_Class = async (el) => {
     });
 }
 // handles collecting the data from the class changes and then sending to the server update function.
-async function saveClassChanges(jobName, classPrompt=false) {
-    if (classPrompt) {
-        jobName = document.querySelector('.newClass h4').innerHTML;
-        console.log('Requesting Name: ', jobName)
-        let nameAvailable = await getCharacterClassFromServer(jobName);
-        if (nameAvailable == undefined) {
-        } else {
-            alert('Class Name is not available! Please change it and try again.');
-            return
-        }
+async function saveNewClass() {
+    actualJobName = document.querySelector('#edit-newClass').value;
+    if (actualJobName === '' || actualJobName == null) {
+        alert('Please enter a name for the class');
+        return
     }
-    let jobFromServer = await getCharacterClassFromServer(jobName);
+    let jobnameTemp = actualJobName.replaceAll(' ', '_');
+    let jobFromServer = await getCharacterClassFromServer(jobnameTemp);
+    if (jobFromServer !== undefined) {
+        alert('Class Name is not available! Please change it and try again.');
+        return
+    }
+    console.log("Reached here! Meaning the class name is available.")
+
+    let classDesc = document.querySelector('.newClass.class-desc textarea').value;
+    let stats = document.querySelectorAll('.newClass.class-stats-ul li');
+    let updatedStats = {};
+    stats.forEach(stat => {
+        let [key, value] = stat.innerHTML.split(' ');
+        updatedStats[key] = Number(value);
+    });
+
+    let updatedClass = {
+        name: jobnameTemp,
+        desc: classDesc,
+        stats: updatedStats,
+        stat_variability: 6, // Same across all classes for now.
+    }
+
+    createJob(updatedClass);
+    clearClassPrompt();
+}
+async function saveClassChanges(jobName) {
+    jobFromServer = await getCharacterClassFromServer(jobName);
 
     let updatedStats = {};
-    let className = document.querySelector(`.${jobName} h4`).innerHTML;
+    let className = document.querySelector(`.${jobName} h4`)?.innerHTML;
+    if (className === '' || className == null) {
+        className = document.querySelector(`.${jobName} > h4 > input`).value;
+    }
     let classDesc = document.querySelector(`.${jobName} span > textarea`)?.value;
     if (classDesc === '' || classDesc == null) {
         classDesc = document.querySelector(`.${jobName} span`).innerHTML;
@@ -337,14 +403,8 @@ async function saveClassChanges(jobName, classPrompt=false) {
         stats: updatedStats,
         stat_variability: jobFromServer.stat_variability
     }
-    console.log('From HTML: ', classDesc)
-    console.log('From Server: ', jobFromServer.desc)
-    console.log('updatedClass: ', updatedClass.desc)
+    updatedClass.name = updatedClass.name.replaceAll(' ', '_');
     updateJob(updatedClass)
-
-    if (classPrompt) {
-        clearClassPrompt();
-    }
 }
 
 const displayMidCloseBtn = () => {

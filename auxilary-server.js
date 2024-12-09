@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const mediaDirectoryPath = path.join(__dirname, 'public/media/images');
+const classIcons = path.join(__dirname, 'public/media/classicons');
 
 
 /// Server Related Stuff
@@ -23,6 +24,10 @@ async function getMediaFiles() {
     let mediaFiles = await getFiles(mediaDirectoryPath);
     return mediaFiles;
 }
+async function getClassIcons() {
+    let classIcons = await getFiles(classIcons);
+    return classIcons;
+}
 
 function logRequest(type, forwhat=null) {
     const now = new Date();
@@ -42,7 +47,7 @@ function confirmResponse(type, forwhat=null) {
 // Classes
 ////////////////////////////////////
 class Job {
-    constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck, avg_wisdom, avg_dex, avg_charisma, avg_constitution) {
+    constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck, avg_wisdom, avg_dex, avg_charisma, avg_constitution, icon=undefined) {
         this.name = name;
         this.desc = desc;
         this.stats = {
@@ -58,6 +63,13 @@ class Job {
             constitution: avg_constitution
         }
         this.stat_variability = stat_variability;
+    }
+
+    static async create(parameters, name) {
+        if (parameters.icon == undefined) {
+            let url = await getClassIcons().then(res => res[mathRandom(0, res.length)]);
+            parameters.image = `${url}`;
+        }
     }
 
     changeStat(stat, value) {
@@ -116,7 +128,6 @@ class Character {
             let url = await getMediaFiles().then(res => res[mathRandom(0, res.length)]);
             parameters.image = `${url}`;
         }
-        return new Character(parameters, name);
     }
 
     setStat(stat, job, species) {
@@ -258,6 +269,41 @@ function editJob(body) {
         return true;
     }
 }
-
-
-module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter, getCharacterJobs, deleteJob, editJob }; 
+function createJob(job) {
+    try {
+        JOBS.push(job);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+function getSpeciesList() {
+    return SPECIES;
+}
+async function deleteSpecies(name) {
+    let index = SPECIES.findIndex(species => species.name === name);
+    if (index === -1) {
+        // Failed to find it, thus can't delete it. Return false to tell the client that the request failed.
+        return false;
+    }
+    SPECIES.splice(index, 1);
+    return true;
+}
+function editSpecies(body) {
+    let index = SPECIES.findIndex(s => s.name === body.SPECIES.name);
+    if (index === -1) {
+        return undefined;
+    } else {
+        SPECIES[index] = body.SPECIES;
+        return true;
+    }
+}
+function createSpecies(species) {
+    try {
+        SPECIES.push(species);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter, getCharacterJobs, deleteJob, editJob, createJob, getSpeciesList, deleteSpecies, editSpecies, createSpecies }; 

@@ -1,0 +1,297 @@
+html {
+    --red: #FC2007;
+    --scroll-bg: #D5A977;
+    --yellow: #FFD700;
+    --black: #000;
+    --white: #FFF;
+}
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
+}
+main {
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+.font-default {
+    font-family: 'Inter'
+}
+.font-styled {
+    font-family: "Macondo";
+}
+.grid-col-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+}
+.grid-col-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+.hidden {
+    display: none !important;
+}
+
+.screen {
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.main-screen {
+    overflow: hidden;
+    --padding-inline: 16px;
+    width: calc(100% - var(--padding-inline) * 2);
+    height: calc(100% - 96px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block: 48px;
+    padding-inline: var(--padding-inline);
+}
+.section-header {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}
+hr {
+    width: 100%;
+    border-color: var(--black);
+    border-radius: 1px;
+    margin-block: 16px;
+}
+hr.margin-b-half {
+    margin-bottom: 8px;
+}
+.btn-default {
+    all: unset;
+    padding: 8px 16px;
+    background: var(--scroll-bg);
+    color: var(--black);
+    border: 1px solid var(--black);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Macondo";
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block;
+    transition: background 0.2s;
+}
+.btn-default:hover {
+    background: var(--black);
+    color: var(--scroll-bg);
+}
+.btn-red {
+    border: 1px solid var(--red);
+    color: var(--red);
+}
+.btn-red:hover {
+    background: var(--red);
+    color: var(--scroll-bg);
+}
+.btn-small {
+    padding: 4px 8px;
+    font-size: 1rem;
+}
+.error-div {
+    position: relative;
+    display: block;
+    height: 24px;
+    grid-template-columns: 1fr;
+    width: 100%;
+    display: grid;
+    place-items: center;
+}
+.error-div > .error-span {
+    position: absolute;
+    min-height: max-content;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(50%);
+    color: var(--red);
+    font-size: 0.8rem;
+    font-family: "Macondo";
+    text-align: center;
+}
+.error-span.shake {
+    animation-duration: 500ms;
+    animation-name: shake;
+    animation-iteration-count: 2;
+}
+@keyframes shake {
+    25%{
+      transform: translateX(calc(-50% + 5px)) translateY(50%);
+    }
+    50%{
+      transform: translateX(calc(-50% - 5px)) translateY(50%);
+    }
+  }
+
+.creation-form {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    --gap: 4px;
+    --padding: 4px;
+    gap: var(--gap);
+}
+.creation-form label {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--gap) / 2);
+}
+.creation-form label > span:not(.grid-col-3, .grid-col-2) {
+    font-weight: bold;
+    font-family: "Macondo";
+    font-size: 0.8rem;
+    border-bottom: 1px solid var(--black);
+}
+.creation-form fieldset {
+    padding: 0;
+    margin: 0;
+    gap: var(--gap);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: none;
+}
+.creation-form label > input,
+.creation-form .grid-col-3 > input {
+    all: unset;
+    color: var(--black);
+    padding: var(--padding);
+    --border-width: 1px;
+    border: var(--border-width) solid var(--black);
+    width: calc(100% - var(--padding) * 2 - var(--border-width) * 2);
+    font-size: 0.8rem;
+} 
+.creation-form label > textarea {
+    all: unset;
+    color: var(--black);
+    padding: var(--padding);
+    --border-width: 1px;
+    border: var(--border-width) solid var(--black);
+    width: calc(100% - var(--padding) * 2 - var(--border-width) * 2);
+    font-size: 0.8rem;
+}
+#class-stats-label > p,
+#species-stats-label > p,
+.stat-variability-label > p {
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+@keyframes collapseScroll {
+    0% {
+        bottom: 0;
+    }
+    90% {
+        bottom: calc(120% - 144px);
+    }
+    100% {
+        bottom: 0;
+    }
+}
+@keyframes expandScroll {
+    0 {
+        bottom: 80%;
+    }
+    20% {
+        bottom: calc(60%);
+    }
+    70% {
+        bottom: calc(10%);
+    }
+    100% {
+        bottom: 0;
+    }
+}
+.scroll {
+    position: relative;
+    min-width: 600px;
+    width: max-content;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 0fr;
+    place-items: center;
+    padding-block: 50px;
+    transition: grid-template-rows 2s ;
+    max-height: 80vh;
+}
+.scroll > div {
+    overflow: hidden;
+    background: var(--scroll-bg);
+    width: 80%;
+    height: 100%;
+    max-height: 100%;
+}
+.scroll.open {
+    grid-template-rows: 1fr;
+}
+.scroll:not(.open) > img:last-of-type {
+    animation: 2s 1 alternate collapseScroll;
+}
+.scroll.open:not(.DONOTRUN) > img:last-of-type {
+    animation: 2s 1 alternate expandScroll;
+}
+.scroll > img {
+    position: absolute;
+    width: auto;
+    height: 72px;
+}
+.scroll > img:first-of-type {
+    top: 0;
+    left: 0;
+    transform: translateY(-50% + ) translateX(-50%);
+}
+.scroll > img:last-of-type {
+    bottom: 0;
+    left: 0;
+    transform: rotate(180deg);
+}
+
+#classes-ul,
+#species-ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+}
+#classes-ul > li,
+#species-ul > li {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    gap: 4px;
+    border: 1px solid var(--black);
+    border-radius: 4px;
+}
+#classes-ul > li > h3,
+#species-ul > li > h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-family: "Macondo";
+}
+#classes-ul > li > p,
+#species-ul > li > p {
+    margin: 0;
+    font-size: 1rem;
+    font-family: "Macondo";
+}
+#classes-ul > li > div,
+#species-ul > li > div {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    gap: 4px;
+}
