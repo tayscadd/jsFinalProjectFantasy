@@ -1,7 +1,7 @@
 // Imports
 const express = require('express');
 const app = express();
-const { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter, getCharacterJobs, deleteJob, editJob, createJob, getSpeciesList, deleteSpecies, editSpecies, createSpecies } = require('./auxilary-server')
+const { logRequest, confirmResponse, getMediaFiles, deleteCharacter, getCharacters, generateRandomCharacter, getCharacterJobs, deleteJob, editJob, createJob, getSpeciesList, deleteSpecies, editSpecies, createSpecies, createCharacter } = require('./auxilary-server')
 
 
 // Variables that will be used throughout the server
@@ -35,6 +35,18 @@ app.get('/get/newcharacter', async (req, res) => {
     res.send({ character });
     confirmResponse('GET', '/get/newcharacter');
 })
+app.get('/get/characters', async (req, res) => {
+    logRequest('GET', '/get/characters');
+    const characters = await getCharacters();
+    res.send({ characters });
+    confirmResponse('GET', '/get/characters');
+});
+app.get('/get/character/:id', async (req, res) => {
+    logRequest('GET', `/get/character/${req.params.id}`);
+    const character = await getCharacters().find(character => character.id === Number(req.params.id));
+    res.send({ character });
+    confirmResponse('GET', `/get/character/${req.params.id}`);
+});
 
 app.get('/get/classes', (req, res) => {
     logRequest('GET', '/get/classes');
@@ -115,9 +127,17 @@ app.put('/put/specie/create', (req, res) => {
     }
     confirmResponse('PUT', '/put/species/create');
 });
-
-app.put('/log', (req, res) => {
-    console.log("[CLIENT MESSAGE]: " , req.body.msg)
+app.put('/put/character/create', (req, res) => {
+    logRequest('PUT', '/put/character/create');
+    let response = createCharacter(req.body.CHARACTER);
+    if (response) {
+        res.send({ serverResponse: 'Character Created' });
+        console.log('Success')
+    } else {
+        console.log('Failed')
+        res.status(400).send({ serverResponse: 'Failed to create character' });
+    }
+    confirmResponse('PUT', '/put/character/create');
 });
 
 ////
@@ -143,10 +163,22 @@ app.delete('/delete/specie', async (req, res) => {
     }
     confirmResponse('DELETE', '/delete/specie');
 });
+app.delete('/delete/character', async (req, res) => {
+    logRequest('DELETE', `/delete/character (${req.body.id})`);
+    let success = await deleteCharacter(req.body.id);
+    if (!success) {
+        res.status(400).send({ serverResponse: 'Failed to delete character' });
+    } else {
+        res.send({ serverResponse: 'Character Deleted' });
+    }
+    confirmResponse('DELETE', '/delete/character');
+});
 
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-
+app.put('/log', (req, res) => {
+    console.log("[CLIENT MESSAGE]: " , req.body.msg)
+});
 

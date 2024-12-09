@@ -50,7 +50,6 @@ export async function getCharacterClassIconFromServer(name) {
 
 // Gets a random character from the server, then returns the character object class.
 export async function getNewCharacterFromServer() {
-    console.log(`Getting Data from ${baseURL}/get/newcharacter`)
     let response = await fetch(`${baseURL}/get/newcharacter`).then(res => res.json());
     response.character.job.name = response.character.job.name.replaceAll('_', ' ');
     response.character.species.name = response.character.species.name.replaceAll('_', ' ');
@@ -66,10 +65,51 @@ export async function getCharactersFromServer() {
 
 // Gets specific character from the server.
 export async function getCharacterFromServer(id) {
-    let response = await fetch(`${baseURL}/get/character/${id}`).then(res => res.json());
+    let response = await fetch(`${baseURL}/get/character/${id}`).then(res => res.json()).catch(err => console.error("Response from Server:", err));
     return response.character;
 }
-
+export async function createCharacter(character) {
+    console.log('Creating Character: ', character);
+    let options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ CHARACTER: character })
+    }
+    let response = await fetch(`${baseURL}/put/character/create`, options)
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Failed to create character');
+        }
+        return true;
+    }).catch(err => {
+        console.error(err);
+        return false;
+    });
+    return response
+}
+export async function deleteCharacter(id) {
+    console.log('Deleting Character: ', id);
+    let options = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id })
+    }
+    let response = await fetch(`${baseURL}/delete/character/`, options)
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Failed to delete character');
+        }
+        return true
+    }).catch(err => {
+        console.error(err);
+        return false
+    });
+    return response
+}
 
 
 
@@ -105,7 +145,7 @@ export async function deleteClass(name) {
         console.error(err);
         return false
     });
-    
+    return response
 }
 // Saves changes to a class on the server.
 export async function updateJob(job) {

@@ -104,6 +104,7 @@ class Character {
         this.id = CHARACTER_ID;
         CHARACTER_ID++;
         this.job = parameters.job;
+        this.history = parameters.history;
         this.species = parameters.species;
         this.name = name;
         this.image = parameters.image;
@@ -128,6 +129,10 @@ class Character {
             let url = await getMediaFiles().then(res => res[mathRandom(0, res.length)]);
             parameters.image = `${url}`;
         }
+        if (parameters.history == undefined) {
+            parameters.history = "No history has been written for this character.";
+        }
+        return new Character(parameters, name);
     }
 
     setStat(stat, job, species) {
@@ -240,14 +245,59 @@ let CHARACTER_ID = (CHARACTERS.length > 0) ? CHARACTERS.length + 1 : 0;
 function mathRandom(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
+
+//////
+// Characters
 async function generateRandomCharacter() {
     let newJob = JOBS[mathRandom(0,JOBS.length)];
     let newSpecies = SPECIES[mathRandom(0,SPECIES.length)];
     let newName = `${FIRSTNAMES[mathRandom(0,FIRSTNAMES.length)]} ${LASTNAMES[mathRandom(0,LASTNAMES.length)]}`;
     let newCharacter = await Character.create({job: newJob, species: newSpecies}, newName);
+    console.log(newCharacter.name);
     CHARACTERS.push(newCharacter);
     return newCharacter;
 }
+function getCharacters() {
+    return CHARACTERS;
+}
+async function deleteCharacter(id) {
+    console.log("Deleting Character: ", id);
+    let index = CHARACTERS.findIndex(character => character.id === Number(id));
+    if (index === -1) {
+        // Failed to find it, thus can't delete it. Return false to tell the client that the request failed.
+        return false;
+    }
+    CHARACTERS.splice(index, 1);
+    return true;
+}
+function editCharacter(body) {
+    let index = CHARACTERS.findIndex(c => c.id === body.character.id);
+    if (index === -1) {
+        return undefined;
+    } else {
+        CHARACTERS[index] = body.character;
+        return true;
+    }
+}
+function createCharacter(character) {
+    try {
+        let anyofthesamecharacters = CHARACTERS.findIndex(c => c.id === character.id)
+        console.log("Any of the same characters: ", anyofthesamecharacters);
+        if (anyofthesamecharacters !== -1) {
+            console.log("Character already exists");
+            CHARACTERS[anyofthesamecharacters] = character;
+        } else {
+            console.log("Character doesn't exist");
+            CHARACTERS.push(character);
+        }
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+//////
+// Jobs
 function getCharacterJobs() {
     return JOBS;
 }
@@ -277,6 +327,9 @@ function createJob(job) {
         return false;
     }
 }
+
+//////
+// Species
 function getSpeciesList() {
     return SPECIES;
 }
@@ -306,4 +359,4 @@ function createSpecies(species) {
         return false;
     }
 }
-module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter, getCharacterJobs, deleteJob, editJob, createJob, getSpeciesList, deleteSpecies, editSpecies, createSpecies }; 
+module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter, getCharacterJobs, deleteJob, editJob, createJob, getSpeciesList, deleteSpecies, editSpecies, createSpecies, getCharacters, deleteCharacter, editCharacter, createCharacter }; 

@@ -1,3 +1,13 @@
+
+***How To Run**
+- 1. npm install
+- 2. node server.js
+- 3. go to http://localhost:5500/test.html
+
+THE INDEX PAGE IS THE OLD VERSION
+
+____
+
 **Where Content (not created by me) was found:**
 *images*: https://www.reddit.com/r/rpg/comments/gpghyq/500_fantasy_character_portrait_icons/
 - Free to use for what ever I want, AI generated
@@ -8,3 +18,5 @@
 
 *class icons*: https://game-icons.net/tags/medieval-fantasy.html
 - Free use license
+
+

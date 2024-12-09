@@ -141,6 +141,29 @@ hr.margin-b-half {
     flex-direction: column;
     --gap: 4px;
     --padding: 4px;
+    gap: calc(var(--gap) * 2);
+}
+.creation-form .top-with-image {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: calc(var(--gap) * 2);
+    margin-bottom: var(--gap);
+}
+.creation-form .top-with-image > img {
+    width: 90px;
+    max-width: 90px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.creation-form .top-with-image > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+.creation-form .character-assignments {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: var(--gap);
 }
 .creation-form label {
@@ -154,6 +177,9 @@ hr.margin-b-half {
     font-size: 0.8rem;
     border-bottom: 1px solid var(--black);
 }
+.creation-form #character-stats > label > span {
+    font-size: 0.7rem;
+}
 .creation-form fieldset {
     padding: 0;
     margin: 0;
@@ -163,7 +189,8 @@ hr.margin-b-half {
     border: none;
 }
 .creation-form label > input,
-.creation-form .grid-col-3 > input {
+.creation-form .grid-col-3 > input,
+.creation-form select {
     all: unset;
     color: var(--black);
     padding: var(--padding);
@@ -183,6 +210,7 @@ hr.margin-b-half {
 }
 #class-stats-label > p,
 #species-stats-label > p,
+#character-stats-label > p,
 .stat-variability-label > p {
     margin: 0;
     font-size: 0.8rem;
@@ -258,7 +286,8 @@ hr.margin-b-half {
 }
 
 #classes-ul,
-#species-ul {
+#species-ul,
+#characters-ul {
     padding: 0;
     list-style: none;
     display: flex;
@@ -267,7 +296,8 @@ hr.margin-b-half {
     overflow-y: auto;
 }
 #classes-ul > li,
-#species-ul > li {
+#species-ul > li,
+#characters-ul > li {
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -277,19 +307,22 @@ hr.margin-b-half {
     border-radius: 4px;
 }
 #classes-ul > li > h3,
-#species-ul > li > h3 {
+#species-ul > li > h3,
+#characters-ul > li > h3 {
     margin: 0;
     font-size: 1.2rem;
     font-family: "Macondo";
 }
 #classes-ul > li > p,
-#species-ul > li > p {
+#species-ul > li > p,
+#characters-ul > li > p {
     margin: 0;
     font-size: 1rem;
     font-family: "Macondo";
 }
 #classes-ul > li > div,
-#species-ul > li > div {
+#species-ul > li > div,
+#characters-ul > li > div {
     display: flex;
     flex-direction: row-reverse;
     width: 100%;

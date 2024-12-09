@@ -4,24 +4,8 @@ import * as CHARACTER from './client-character.js';
 import * as JOBS from './client-jobs.js'; // Jobs is another word for classes, because classes is a reserved word.
 import * as SPECIES from './client-species.js';
 
-
-
-async function toggleScroll() {
-    // Animates the scroll closing and opening
-    let scroll = document.querySelector('.scroll');
-    scroll.classList.remove('DONOTRUN') // Prevents the scroll from being opened when the page is loaded.
-    if (scroll.classList.contains('open')) {
-        scroll.classList.remove('open')
-    } else {
-        scroll.classList.add('open')
-    }
-    await timer(2000);
-    return true;
-    // Returns true to tell whoever called it that the animation is done.
-}
-async function timer(ms) {
-    return new Promise(res => setTimeout(res, ms));
-}
+////////
+// CLASSES (JOBS)
 
 // Handles the form submission for the class creator form.
 VARIABLES.CLASS_CREATOR_FORM.addEventListener('submit', function(event) {
@@ -73,6 +57,11 @@ VARIABLES.CLASS_LIST_SCREEN.addEventListener('click', async function(event) {
     }
 });
 
+
+
+////////
+// SPECIES
+
 // Handles the form submission for the class creator form.
 VARIABLES.SPECIES_CREATOR_FORM.addEventListener('submit', function(event) {
     // Don't want the page to refresh when the form is submitted.
@@ -123,11 +112,70 @@ VARIABLES.SPECIES_LIST_SCREEN.addEventListener('click', async function(event) {
     }
 });
 
+
+////////
+// CHARACTERS
+VARIABLES.CHARACTER_CREATOR_FORM.addEventListener('submit', function(event) {
+    // Don't want the page to refresh when the form is submitted.
+    console.log('Submitting Character Form');
+    CHARACTER.charactersHandleSubmit(event);
+});
+
+VARIABLES.CHARACTER_CREATOR_FORM.addEventListener('click', function(event) {
+    // Handle routing the clicks on the class creator form.
+    const createCharacterBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#createCharacter');
+    const cancelCreateBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('.cancel-btn');
+    const resetFormBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('.reset-btn');
+    
+    switch (event.target) {
+        case createCharacterBtn:
+            // This gets handled in the submit listener
+            break;
+        case cancelCreateBtn:
+            console.log('Canceling Creating a Character');
+            CHARACTER.cancelCreateCharacters();
+            CHARACTER.characterHandleList();
+            break;
+        case resetFormBtn:
+            console.log('Resetting Form');
+            CHARACTER.resetForm(VARIABLES.CHARACTER_CREATOR_FORM);
+            break;
+    }
+
+});
+
+
+// Handles events for the characters list screen.
+VARIABLES.CHARACTER_LIST_SCREEN.addEventListener('click', async function(event) {
+    let target = event.target;
+    if (target.classList.contains('btn-edit')) {
+        console.log('Editing Character');
+        await CHARACTER.editCharacters(target.parentElement.parentElement.querySelector('h3').id);
+        CHARACTER.characterHandleList();
+    } else if (target.classList.contains('btn-delete-class')) {
+        console.log('Deleting Character');
+        await SERVER.deleteCharacter(target.parentElement.parentElement.querySelector('h3').id);
+        CHARACTER.characterHandleList();
+    } else if (target.id == 'createNewCharacter') {
+        console.log('Creating New Character');
+        CHARACTER.showCharactersCreator();
+    } else if (target.classList.contains('cancel-btn')) {
+        console.log('Going back to the Main Screen');
+        VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+        VARIABLES.MAIN_SCREEN.classList.remove('hidden');
+    }
+});
+
+////////
+// OTHER
+
 // Handles the events for the main screen.
 VARIABLES.MAIN_SCREEN.addEventListener('click', async function(event) {
     let target = event.target;
     if (target.id == 'viewCharacters') {
         console.log('Viewing Characters');
+        CHARACTER.characterHandleList();
+        CHARACTER.showAllCharacters();
     } else if (target.id == 'viewClasses') {
         console.log('Viewing Classes');
         JOBS.jobHandleClassList();
@@ -138,7 +186,27 @@ VARIABLES.MAIN_SCREEN.addEventListener('click', async function(event) {
         SPECIES.showAllSpecies();
     }
 });
+
+async function toggleScroll() {
+    // Animates the scroll closing and opening
+    let scroll = document.querySelector('.scroll');
+    scroll.classList.remove('DONOTRUN') // Prevents the scroll from being opened when the page is loaded.
+    if (scroll.classList.contains('open')) {
+        scroll.classList.remove('open')
+    } else {
+        scroll.classList.add('open')
+    }
+    await timer(2000);
+    return true;
+    // Returns true to tell whoever called it that the animation is done.
+}
+async function timer(ms) {
+    return new Promise(res => setTimeout(res, ms));
+}
+
+// Allows users to close and open the scroll, for fun.
 let toggleBtn = document.querySelector('#toggle-btn');
 toggleBtn.addEventListener('click', toggleScroll);
 
-console.log(await SERVER.getCharacterClassesFromServer())
+// Generates a random character so there is something in the database.
+await SERVER.getNewCharacterFromServer();
