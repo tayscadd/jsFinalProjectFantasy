@@ -45,42 +45,46 @@ class Job {
     constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck, avg_wisdom, avg_dex, avg_charisma, avg_constitution) {
         this.name = name;
         this.desc = desc;
+        this.stats = {
+            strength: avg_strength,
+            intelligence: avg_intelligence,
+            wisdom: avg_wisdom,
+            agility: avg_agility,
+            speed: avg_speed,
+            dex: avg_dex,
+            magic: avg_magic,
+            luck: avg_luck,
+            charisma: avg_charisma,
+            constitution: avg_constitution
+        }
         this.stat_variability = stat_variability;
-        this.avg_strength = avg_strength;
-        this.avg_intelligence = avg_intelligence;
-        this.avg_wisdom = avg_wisdom;
-        this.avg_agility = avg_agility;
-        this.avg_speed = avg_speed;
-        this.avg_dex = avg_dex;
-        this.avg_magic = avg_magic;
-        this.avg_luck = avg_luck;
-        this.avg_charisma = avg_charisma;
-        this.avg_constitution = avg_constitution;
     }
 
     changeStat(stat, value) {
-        this[stat] = value;
+        this.stats[stat] = value;
     }
 }
 class Species {
     constructor(name, desc, stat_variability, avg_strength, avg_intelligence, avg_agility, avg_speed, avg_magic, avg_luck, avg_wisdom, avg_dex, avg_charisma, avg_constitution) {
         this.name = name;
         this.desc = desc;
+        this.stats = {
+            strength: avg_strength,
+            intelligence: avg_intelligence,
+            wisdom: avg_wisdom,
+            agility: avg_agility,
+            speed: avg_speed,
+            dex: avg_dex,
+            magic: avg_magic,
+            luck: avg_luck,
+            charisma: avg_charisma,
+            constitution: avg_constitution
+        }
         this.stat_variability = stat_variability;
-        this.avg_strength = avg_strength;
-        this.avg_intelligence = avg_intelligence;
-        this.avg_wisdom = avg_wisdom;
-        this.avg_agility = avg_agility;
-        this.avg_speed = avg_speed;
-        this.avg_dex = avg_dex;
-        this.avg_magic = avg_magic;
-        this.avg_luck = avg_luck;
-        this.avg_charisma = avg_charisma;
-        this.avg_constitution = avg_constitution;
     }
 
     changeStat(stat, value) {
-        this[stat] = value;
+        this.stats[stat] = value;
     }
 }
 class Character {
@@ -92,16 +96,18 @@ class Character {
         this.name = name;
         this.image = parameters.image;
         this.level = mathRandom(0,10);
-        this.strength = this.setStat("strength", this.job, this.species) + this.level;
-        this.intelligence = this.setStat("intelligence", this.job, this.species) + this.level;
-        this.wisdom = this.setStat("wisdom", this.job, this.species) + this.level;
-        this.agility = this.setStat("agility", this.job, this.species) + this.level;
-        this.speed = this.setStat("speed", this.job, this.species) + this.level;
-        this.magic = this.setStat("magic", this.job, this.species) + this.level;
-        this.luck = this.setStat("luck", this.job, this.species) + this.level;
-        this.dex = this.setStat("dex", this.job, this.species) + this.level;
-        this.charisma = this.setStat("charisma", this.job, this.species) + this.level;
-        this.constitution = this.setStat("constitution", this.job, this.species) + this.level;
+        this.stats = {
+            strength: this.setStat("strength", this.job, this.species) + this.level,
+            intelligence: this.setStat("intelligence", this.job, this.species) + this.level,
+            wisdom: this.setStat("wisdom", this.job, this.species) + this.level,
+            agility: this.setStat("agility", this.job, this.species) + this.level,
+            speed: this.setStat("speed", this.job, this.species) + this.level,
+            dex: this.setStat("dex", this.job, this.species) + this.level,
+            magic: this.setStat("magic", this.job, this.species) + this.level,
+            luck: this.setStat("luck", this.job, this.species) + this.level,
+            charisma: this.setStat("charisma", this.job, this.species) + this.level,
+            constitution: this.setStat("constitution", this.job, this.species) + this.level,
+        }
     }
 
     // Lets me use asycnc to get a random image. By calling the Character.create() method, I can get a random image if the parameters don't have one specified.
@@ -115,8 +121,8 @@ class Character {
 
     setStat(stat, job, species) {
         let VALUE = mathRandom(
-            job[`avg_${stat}`] - species[`avg_${stat}`],
-            job[`avg_${stat}`] + species[`avg_${stat}`]
+            job.stats[stat] - species.stats[stat],
+            job.stats[stat] + species.stats[stat]
         );
         VALUE = Math.round(VALUE);
         if (VALUE < 0) {
@@ -131,7 +137,13 @@ class Character {
 ////////////////////////////////////
 let JOBS = [
     new Job("Warrior", "Warriors are known for their strength and agility.", 6, 18, 7, 12, 10, 0, 5, 6, 12, 10, 12),
-    new Job("Wizard", "Wizards are knowm for their intelligence and magic.", 6, 3, 12, 4, 3, 16, 0, 11, 4, 8, 6),
+    new Job("Wizard", "Wizards are known for their intelligence and magic.", 6, 3, 12, 4, 3, 16, 0, 11, 4, 8, 6),
+    new Job("Rogue", "Rogues are known for their agility and speed.", 6, 8, 6, 14, 16, 0, 5, 5, 8, 12, 8),
+    new Job("Cleric", "Clerics are known for their wisdom and charisma.", 6, 6, 10, 6, 6, 8, 0, 12, 6, 8, 14),
+    new Job("Bard", "Bards are known for their charisma and luck.", 6, 6, 8, 6, 6, 6, 0, 14, 6, 8, 10),
+    new Job("Paladin", "Paladins are known for their strength and charisma.", 6, 16, 6, 10, 8, 0, 5, 6, 10, 10, 14),
+    new Job("Ranger", "Rangers are known for their agility and speed.", 6, 10, 6, 14, 16, 0, 5, 5, 8, 12, 8),
+    new Job("Druid", "Druids are known for their connection to nature.", 6, 6, 10, 6, 6, 12, 0, 11, 6, 8, 12),
 ]
 let SPECIES = [
     new Species("Human", "Humans are recarded as strong warriors who are able to adapt to any situation.", 6, 14, 8, 8, 5, 5, 5, 12, 9, 8, 10),
@@ -217,7 +229,6 @@ let CHARACTER_ID = (CHARACTERS.length > 0) ? CHARACTERS.length + 1 : 0;
 function mathRandom(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
-
 async function generateRandomCharacter() {
     let newJob = JOBS[mathRandom(0,JOBS.length)];
     let newSpecies = SPECIES[mathRandom(0,SPECIES.length)];
@@ -226,5 +237,27 @@ async function generateRandomCharacter() {
     CHARACTERS.push(newCharacter);
     return newCharacter;
 }
+function getCharacterJobs() {
+    return JOBS;
+}
+async function deleteJob(name) {
+    let index = JOBS.findIndex(job => job.name === name);
+    if (index === -1) {
+        // Failed to find it, thus can't delete it. Return false to tell the client that the request failed.
+        return false;
+    }
+    JOBS.splice(index, 1);
+    return true;
+}
+function editJob(body) {
+    let index = JOBS.findIndex(j => j.name === body.JOB.name);
+    if (index === -1) {
+        return undefined;
+    } else {
+        JOBS[index] = body.JOB;
+        return true;
+    }
+}
 
-module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter }; 
+
+module.exports = { logRequest, confirmResponse, getMediaFiles, generateRandomCharacter, getCharacterJobs, deleteJob, editJob }; 

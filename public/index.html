@@ -14,7 +14,7 @@
     <header>
         <h1>Fantasy Character Creator</h1>
     </header>
-    <main>
+    <main class="text-inter">
         <div class="characterSheet" id="characterDisplay">
             <div class="leftside">
                 <div class="imageFrame">
@@ -36,27 +36,37 @@
                         <p class="tag">Charisma: <span id="characterCharisma"></span></p>
                     </div>
                 </div>
-                <div class="btn-default-container">
-                    <button class="text-fantasy" type="button" onclick="updateCharacterSheetWithRandomData()">Generate New Character</button>
+                <div class="btn-default">
+                    <button class="text-fantasy" type="button" onclick="generateNewCharacter()">Generate New Character</button>
                 </div>
             </div>
             <div class="middle">
-                <div class="borderbackground"></div>
-                <div class="header">
-                    <h2 class='text-fantasy' id="characterName">Name</h2>
-                    <div>
-                        <p class='text-fantasy tag' id="characterLevel">lvl 0</p>
-                        <p class="text-fantasy tag" id="characterClass">Unknown</p>
+                <div class="middle-container">
+                    <div class="borderbackground"></div>
+                    <div class="characterInfo mid-container">
+                        <div class="header">
+                            <h2 class='text-fantasy' id="characterName">Name</h2>
+                            <div>
+                                <p class='text-fantasy tag' id="characterLevel">lvl 0</p>
+                                <p class="text-fantasy tag" id="characterClass">Unknown</p>
+                            </div>
+                        </div>
+                        <p id="characterDescription"></p>
+                    </div>
+                    <div class="editClasses hidden mid-container">
+                        <div class="topOptions"><button class="btn-secondary" onclick="newClassPrompt()">Make a New Class</button></div>
+                        <ul class="classList">
+                        </ul>
                     </div>
                 </div>
-                <p id="characterDescription"></p>
+                <button id="mid-container-close-btn" class="btn-default text-fantasy hidden" onclick="toggleDisplay('characterInfo', 'mid-container');closeMidContainer()">Close</button>
             </div>
             <div class="rightside">
                 <div class="borderbackground"></div>
-                <button class="btn-default text-fantasy">Edit Character</button>
-                <button class="btn-default text-fantasy">Edit Classes</button>
-                <button class="btn-default text-fantasy">Edit Species</button>
-                <button class="btn-default text-fantasy">Characters</button>
+                <button class="btn-default text-fantasy" onclick="displayMidCloseBtn()">Edit Character</button>
+                <button class="btn-default text-fantasy" onclick="editClasses();displayMidCloseBtn()">Edit Classes</button>
+                <button class="btn-default text-fantasy" onclick="displayMidCloseBtn()">Edit Species</button>
+                <button class="btn-default text-fantasy" onclick="displayMidCloseBtn()">Characters</button>
             </div>
         </div>
     </main>

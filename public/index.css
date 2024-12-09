@@ -9,10 +9,16 @@ html * {
     --_-left-width: 250;
     --_-left-padding: 4;
     --_-middle-padding: 4;
+    --height: 450px;
     max-width: 800px;
+    height: var(--height);
+    max-height: var(--height);
     display: grid;
     grid-template-columns: calc((var(--_-left-width) * 1px) + (var(--_-left-padding) * 2px)) 2fr 1fr;
     gap: calc(var(--_-middle-padding) * 1px);
+}
+.characterSheet > * {
+    max-height: var(--height);;
 }
 .text-inter {
     font-family: 'Inter', sans-serif;
@@ -22,6 +28,9 @@ html * {
 }
 
 /*GENERAL USE*/
+.hidden {
+    display: none !important;
+}
 .tag {
     font-size: .8rem;
     background-color: #FFF;
@@ -118,57 +127,59 @@ html * {
     padding: calc(var(--_-padding) * 1px);
 }
 /*btn-default-container*/
-.btn-default-container {
-    position: relative;
-    width: calc((var(--_-left-width) * 1px) + (var(--_-left-padding) * 2px));
-
-    --local-height: 44px;
-    height: var(--local-height);
-
-    display: grid;
-    place-items: center;
-    background-image: var(--_-light-wood);
-    background-repeat: repeat;
-    background-size: cover;
-    transition: height 0.3s;
-}
-.btn-default {
+.btn-default, .btn-default button  {
     --local-height: 44px;
     height: var(--local-height);
     position: relative;
     width: calc((var(--_-left-width) * 1px) + (var(--_-left-padding) * 2px));
     background-image: var(--_-light-wood) !important;
     background-repeat: repeat;
-    background-size: cover;
-    transition: height 0.3s;
+    background-size: auto 100px;
+    transition: font-size 0.3s;
     background: none;
     border: none;
     color: white;
     width: 100%;
     cursor: pointer;
 }
-.btn-default-container button {
+.btn-default:hover, .btn-default:hover button {
+    font-size: 1rem;
+}
+.btn-secondary {
     background: none;
-    border: none;
+    border: white 1px solid;
+    border-radius: 9999px;
+    padding: calc(var(--_-padding) * 1px) calc(var(--_-padding) * 3px);
     color: white;
-    width: 100%;
-    height: 100%;
     cursor: pointer;
 }
-.btn-default-container:hover, .btn-default:hover {
-    height: calc(var(--local-height) + 4px);
+.btn-secondary:hover {
+    background: white;
+    color: black;
 }
 
 /*MIDDLE SIDE*/
+/*Character Sheet*/
 .middle {
     --_-padding: var(--_-middle-padding);
     --_-width: 100%;
+    max-height: 100%;
+    padding: 0;
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    gap: calc(var(--_-padding) * 1px);
+    color: #FFF;
+}
+.middle:has(button.hidden) {
+    grid-template-rows: 1fr;
+}
+.middle-container {
     padding: calc(var(--_-padding) * 2px);
     position: relative;
     display: flex;
     flex-direction: column;
     gap: calc(var(--_-padding) * 1px);
-    color: #FFF;
 }
 .middle .header {
     display: flex;
@@ -192,6 +203,126 @@ html * {
     margin: 0;
 }
 
+.middle .classList {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--_-padding) * 1px);
+    padding: calc(var(--_-padding) * 1px);
+    margin: 0;
+}
+.editClasses {
+    max-height: calc(var(--height) - (var(--_-padding) * 5px) - 44px);
+    overflow-y: auto;
+}
+
+/*EditItem*/
+.editClasses > .topOptions {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: calc(var(--_-padding) * 1px);
+    width: 100%;
+}
+.editItem {
+    margin: 0;
+    padding: calc(var(--_-padding) * 1px);
+    border: 1px solid white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--_-padding) * 2px);
+}
+.editItem h4 {
+    margin: 0;
+    padding: 0;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.editItem h4 input {
+    font-size: 1rem !important;
+    background-color: #FFF !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
+    border-radius: 9999px !important;
+    padding: 2px 8px !important;
+    width: min-content !important;
+    min-width: 100px !important;
+}
+.editItem h4 input {
+    all: unset;
+    color: black;
+    border-bottom: 1px solid white;
+}
+.editItem .header > span {
+    font-size: 0.8rem;
+    font-weight: 300;
+}
+.editItem .controls {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: calc(var(--_-padding) * 1px);
+}
+.editItem .controls button {
+    background: none;
+    border: white 1px solid;
+    border-radius: 9999px;
+    padding: calc(var(--_-padding) * 1px) calc(var(--_-padding) * 3px);
+    color: white;
+    cursor: pointer;
+}
+.editItem .controls button:hover {
+    background: white;
+    color: black;
+}
+.editItem .class-stats-ul {
+    overflow-y: auto;
+    padding:0;
+    margin:0;
+    margin-block: calc(var(--_-padding) * 1px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.editItem .class-stats-ul li {
+    list-style: none;
+    width: calc(32% - (var(--_-padding) * 3px) - 2px);
+    gap: calc(var(--_-padding) * 1px);
+    row-gap: calc(var(--_-padding) * 2px);
+}
+.editItem .class-stats-ul li input {
+    all: unset;
+    width: 100%;
+    color: black;
+    border-bottom: 1px solid white;
+}
+.smallheader:has(+.hidden) {
+    display: none !important;
+}
+.smallheader {
+    display: block;
+    width: 100;
+    border-bottom: 1px solid white;
+    font-size: 0.8rem;
+}
+
+/*EditTextArea*/
+.class-desc {
+    width: 100%;
+    height: max-content;
+    color: white;
+}
+.class-desc textarea {
+    width: calc(100% - (var(--_-padding) * 4px) - 2px);
+    padding: calc(var(--_-padding) * 2px);
+    margin-top: calc(var(--_-padding) * 1px);
+    min-height: 60px;
+    color: black;
+    background: white;
+    border: transparent 1px solid;
+    resize: none;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+}
 /*RIGHT SIDE*/
 .rightside {
     position: relative;
