@@ -1,417 +1,228 @@
-let dropPoint = document.querySelector('#loadDataHere');
-const baseURL = 'http://localhost:5500';
-let CURRENTCHARACTER = null;
+import * as SERVER from './client-server-communication.js';
+import * as VARIABLES from './client-variables.js';
+import * as CHARACTER from './client-character.js'; 
+import * as JOBS from './client-jobs.js'; // Jobs is another word for classes, because classes is a reserved word.
+import * as SPECIES from './client-species.js';
 
+////////
+// CLASSES (JOBS)
 
-/////
-// Stuff having to do with talking to the server
+// Handles the form submission for the class creator form.
+VARIABLES.CLASS_CREATOR_FORM.addEventListener('submit', function(event) {
+    // Don't want the page to refresh when the form is submitted.
+    JOBS.jobHandleSubmit(event);
+});
 
-//Just puts a comment in the server terminal to help debug.
-async function logRequest(message) {
-    let options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ msg: message })
-    }
-    let res = await fetch(`${baseURL}/log`, options)
-}
-// Gets a list of media files from the server (character photos)
-async function getMediaDataFromServer() {
-    let response = await fetch(`${baseURL}/get/mediafiles`).then(res => res.json());
-    return response.serverResponse;
-}
-// Gets a random character from the server, then returns the character object class.
-async function getNewCharacterFromServer() {
-    console.log(`Getting Data from ${baseURL}/get/newcharacter`)
-    let response = await fetch(`${baseURL}/get/newcharacter`).then(res => res.json());
-    response.character.job.name = response.character.job.name.replaceAll('_', ' ');
-    response.character.species.name = response.character.species.name.replaceAll('_', ' ');
-    response.character.name = response.character.name.replaceAll('_', ' ');
-    return response.character;
-}
-// Gets a list of character classes from the server.
-async function getCharacterClassesFromServer() {
-    let response = await fetch(`${baseURL}/get/classes`).then(res => res.json());
-    return response.character_classes;
-}
-// Gets specific class data from the server.
-async function getCharacterClassFromServer(name) {
-    let response = await fetch(`${baseURL}/get/class/${name}`).then(res => res.json());
-    return response.character_class;
-}
-// Deletes a class from the server.
-const deleteClass = async (name) => {
-    console.log('Deleting Class: ', name);
-    let options = {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: name })
-    }
-    let response = await fetch(`${baseURL}/delete/class`, options)
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Failed to delete class');
-        }
-        editClasses();
-    }).catch(err => {
-        console.error(err);
-    });
+VARIABLES.CLASS_CREATOR_FORM.addEventListener('click', function(event) {
+    // Handle routing the clicks on the class creator form.
+    const createClassBtn = VARIABLES.CLASS_CREATOR_FORM.querySelector('#createClass');
+    const cancelCreateBtn = VARIABLES.CLASS_CREATOR_FORM.querySelector('.cancel-btn');
+    const resetFormBtn = VARIABLES.CLASS_CREATOR_FORM.querySelector('.reset-btn');
     
-}
-// Saves changes to a class on the server.
-async function updateJob(job) {
-    console.log('Saving Class: ', job);
-    let options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ JOB: job })
+    switch (event.target) {
+        case createClassBtn:
+            // This gets handled in the submit listener
+            break;
+        case cancelCreateBtn:
+            console.log('Canceling Creating a Class');
+            JOBS.cancelCreateJob();
+            JOBS.jobHandleClassList();
+            break;
+        case resetFormBtn:
+            console.log('Resetting Form');
+            JOBS.resetForm(VARIABLES.CLASS_CREATOR_FORM);
+            break;
     }
-    let response = await fetch(`${baseURL}/put/class/update`, options)
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Failed to update class');
-        }
-        editClasses();
-    }).catch(err => {
-        console.error(err);
-    });
-}
-async function createJob(job) {
-    console.log('Adding Class: ', job);
-    let options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ JOB: job })
-    }
-    let response = await fetch(`${baseURL}/put/class/create`, options)
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Failed to create class');
-        }
-        editClasses();
-    }).catch(err => {
-        console.error(err);
-    });
-}
-/////
-// Page Manipulation Functions
 
-// Updates the character sheet with the provided character object class.
-function updateCharacterSheet(character) {
-    document.querySelector('#characterName').innerHTML = `${character.name}`;
-    document.querySelector('#characterStrength').innerHTML = character.stats.strength;
-    document.querySelector('#characterClass').innerHTML = `${character.species.name} ${character.job.name}`;
-    document.querySelector('#characterIntelligence').innerHTML = character.stats.intelligence;
-    document.querySelector('#characterWisdom').innerHTML = character.stats.wisdom;
-    document.querySelector('#characterAgility').innerHTML = character.stats.agility;
-    document.querySelector('#characterSpeed').innerHTML = character.stats.speed;
-    document.querySelector('#characterDex').innerHTML = character.stats.dex;
-    document.querySelector('#characterMagic').innerHTML = character.stats.magic;
-    document.querySelector('#characterLuck').innerHTML = character.stats.luck;
-    document.querySelector('#characterCharisma').innerHTML = character.stats.charisma;
-    document.querySelector('#characterConstitution').innerHTML = character.stats.constitution;
-    document.querySelector('#characterLevel').innerHTML = `lvl ${character.level}`;
-    document.querySelector('#characterImage').src = `${baseURL}/media/images/${character.image}`;
-}
-// When the page first loads, get a random character from the server and update the character sheet.
-window.onload = async () => {
-    generateNewCharacter();
-}
+});
+
+// Handles events for the class list screen.
+VARIABLES.CLASS_LIST_SCREEN.addEventListener('click', async function(event) {
+    let target = event.target;
+    if (target.classList.contains('btn-edit')) {
+        console.log('Editing Class');
+        await JOBS.editJob(target.parentElement.parentElement.querySelector('h3').innerHTML);
+        JOBS.jobHandleClassList();
+    } else if (target.classList.contains('btn-delete-class')) {
+        console.log('Deleting Class');
+        await SERVER.deleteClass(target.parentElement.parentElement.querySelector('h3').innerHTML);
+        JOBS.jobHandleClassList();
+    } else if (target.id == 'createNewClass') {
+        console.log('Creating New Class');
+        JOBS.showClassCreator();
+    } else if (target.classList.contains('cancel-btn')) {
+        console.log('Going back to the Main Screen');
+        VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+        VARIABLES.MAIN_SCREEN.classList.remove('hidden');
+    }
+});
 
 
 
-/////
-// Event Listeners // Button onclicks
+////////
+// SPECIES
 
-const generateNewCharacter = async () => {
-    let character = await getNewCharacterFromServer();
-    CURRENTCHARACTER = character;
-    updateCharacterSheet(character);
-}
-// The passed container (the class) will be toggled to display, while the others will be hidden.
-const toggleDisplay = (container, containerGroup, allowSameBtnToggle="false") => {
-    // allowSameBtnToggle is a string due to the way it is passed from the DOM.
-    let containers = document.querySelectorAll(`.${containerGroup}`);
-    console.log('Toggling: ', container);
-    containers.forEach(element => {
-        if (element.classList.contains(container)) {
-            if (!element.classList.contains('hidden') && "false" !== allowSameBtnToggle) {
-                element.classList.add('hidden');
-            } else {
-                element.classList.remove('hidden');
-            }
-        } else {
-            element.classList.add('hidden');
-        }
-    });
-}
-// When the "Edit Classes" button is clicked, get the classes from the server and display them for a user to further edit.
-const editClasses = async () => {
-    let classes = await getCharacterClassesFromServer();
-    let editClassesContainer = document.querySelector('.classList');
-    toggleDisplay('editClasses', 'mid-container')
-    editClassesContainer.innerHTML = '';
-    classes.forEach(characterClass => {
-        editClassesContainer.innerHTML += createClassEditItem(characterClass);
-    });
-}
-const createClassEditItem = (params) => {
-    let stats = ''
-    for (const [key, value] of Object.entries(params.stats)) {
-        stats += `<li class='text-fantasy tag'>${key + " " + value}</li>`
-    }
-    return `<li class='editItem ${params.name}'>
-    <h4>${params.name}</h4>
-    <div>
-        <span class='smallheader'>Class Description</span>
-        <span class='${params.name} class-desc'>${params.desc}</span>
-    </div>
-    <div class="class-stats">
-        <span class='smallheader'>Average Stats</span>
-        <ul class="${params.name} class-stats-ul hidden">
-            ${stats}
-        </ul>
-    </div>
-    <div class="controls">
-        <button onclick='deleteClass("${params.name}")'>Delete Class</button>
-        <button onclick='toggleDisplay("${params.name}", "class-stats-ul", "true");toggleEditingStats("${params.name}", "class-stats-ul");toggleEditingDesc("${params.name}", "class-desc")'>Edit Class</button>
-        <button onclick='saveClassChanges("${params.name}")' class="hidden savebtn">Save Changes</button>
-    </div>
-    </li>`;
-}
-const classPromptActive = () => {
-    let newClass = document.querySelector('.newClass');
-    if (newClass) {
-        return true;
-    } else {
-        return false;
-    }
-}
-const clearClassPrompt = () => {
-    let classPrompt = document.querySelector('.newClass');
-    if (classPrompt) {
-        // Remove event listeners in case they don't get grabage collected.
-        classPrompt.querySelectorAll('.tag').forEach(tag => {
-            tag.removeEventListener('click', editingState_Class);
-        });
-        classPrompt.querySelector('h4 input').removeEventListener('click', (e) => {
-            e.target.value = '';
-            e.target.focus();
-        });
-        classPrompt.remove();
-    }
-}
-const newClassPrompt = () => {
-    console.log('Clicked!')
-    if (!classPromptActive()) {
-        let newClassContainer = document.querySelector('.classList');
-        let li = document.createElement('li');
-        let stats = ['strength', 'intelligence', 'wisdom', 'agility', 'speed', 'dex', 'magic', 'luck', 'charisma', 'constitution'].map(stat => {
-            return `<li class='text-fantasy tag'>${stat + " 0"}</li>`
-        }).join('');
-        li.classList.add(...['editItem', 'newClass']);
-        function createClassPrompt() {
-            return `
-        <h4><input type='text' value='Click to change the Class Name' id='edit-newClass'></h4>
-        <div>
-            <span class='smallheader'>Class Description</span>
-            <span class='newClass class-desc'><textarea class="text-fantasy" id="edit-newClass">newClass Desc</textarea></span>
-        </div>
-        <div class="class-stats">
-            <span class='smallheader'>Average Stats</span>
-            <ul class="newClass class-stats-ul">
-                ${stats}
-            </ul>
-        </div>
-        <div class="controls">
-            <button onclick='deleteClass("newClass")'>Cancel</button>
-            <button onclick='saveNewClass()' class="savebtn">Add Class</button>
-        </div>`
-        }
-        li.innerHTML = createClassPrompt();
-        newClassContainer.insertBefore(li, newClassContainer.firstChild);
-        li.querySelectorAll('.tag').forEach(tag => {
-            tag.addEventListener('click', editingState_Class);
-        });
-        li.querySelector('h4 input').addEventListener('click', (e) => {
-            e.target.value = '';
-            e.target.focus();
-        });
-    }
-}
-const toggleEditingStats = (name, containerGroup) => {
-    const OTHER_CONTAINERS = document.querySelectorAll(`.${containerGroup}:not(.${name})`);
-    const CONTAINER = document.querySelectorAll(`.${containerGroup}.${name}`);
-    CONTAINER.forEach(element => {
-        let saveBtn = element.parentElement.parentElement.querySelector('.savebtn');
-        if (saveBtn.classList.contains('hidden')) {
-            saveBtn.classList.remove('hidden');
-            element.addEventListener('click', editingState_Class);
-            element.classList.add('editing');
-        } else {
-            saveBtn.classList.add('hidden');
-            element.removeEventListener('click', editingState_Class);
-            element.classList.remove('editing');
-        }
-    });
-    OTHER_CONTAINERS.forEach(element => {
-        let saveBtn = element.parentElement.parentElement.querySelector('.savebtn');
-        saveBtn.classList.add('hidden');
-        element.removeEventListener('click', editingState_Class);
-        element.classList.remove('editing');
-        if (element.querySelector('input')) {
-            let allInputs = element.querySelectorAll('input');
-            allInputs.forEach(input => {
-                let v = input.value;
-                let key = input.id.split('edit-')[1];
-                console.log("Key, Value: ", key, v);
-                input.parentElement.innerHTML = `${key} ${v}`;
-            });
-        }
-    });
-}
-const toggleEditingDesc = (name, containerGroup) => {
-    console.log('Toggling Editing Desc: ', name, containerGroup);
-    const OTHER_CONTAINERS = document.querySelectorAll(`.${containerGroup}:not(.${name})`);
-    const CONTAINER = document.querySelector(`.${containerGroup}.${name}`);
-    let savedDesc
-    if (CONTAINER.querySelector('textarea')) {
-        console.log(CONTAINER.querySelector('textarea').innerHTML)
-        savedDesc = CONTAINER.querySelector('textarea').innerHTML;
-    } else {
-        savedDesc = CONTAINER.innerHTML
-    }
-    if (!CONTAINER.classList.contains('editing')) {
-        CONTAINER.classList.add('editing');
-        CONTAINER.innerHTML = `<textarea class="text-fantasy" id="edit-${name}" placeholder="${savedDesc}">${savedDesc}</textarea>`;
+// Handles the form submission for the class creator form.
+VARIABLES.SPECIES_CREATOR_FORM.addEventListener('submit', function(event) {
+    // Don't want the page to refresh when the form is submitted.
+    SPECIES.speciesHandleSubmit(event);
+});
 
-        console.log('CONTAINER WITH EVENT LISTENER: ', CONTAINER)
-        CONTAINER.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                let newValue = CONTAINER.querySelector('textarea')?.value;
-                let inner = CONTAINER.querySelector('textarea')?.innerHTML
-                if (newValue === '' || newValue == null) {
-                    if (inner === newValue) {
-                    } else {
-                        CONTAINER.innerHTML = savedDesc; 
-                    }
-                } else {
-                    if (newValue !== inner) {
-                        CONTAINER.innerHTML = newValue;
-                    }
-                }
-                //savedDesc = The saved description
-                //newValue = The value of the textarea
-                //inner = The innerHTML of the textarea
-            }
-        }, true);
-    } else {
-        CONTAINER.classList.remove('editing');
-        CONTAINER.innerHTML = savedDesc;
-    }
-    OTHER_CONTAINERS.forEach(element => {
-        if (element.querySelector('textarea')) {
-            savedDesc = element.querySelector('textarea').placeholder;
-            element.innerHTML = savedDesc;
-        }
-    });
+VARIABLES.SPECIES_CREATOR_FORM.addEventListener('click', function(event) {
+    // Handle routing the clicks on the class creator form.
+    const createSpeciesBtn = VARIABLES.SPECIES_CREATOR_FORM.querySelector('#createSpecies');
+    const cancelCreateBtn = VARIABLES.SPECIES_CREATOR_FORM.querySelector('.cancel-btn');
+    const resetFormBtn = VARIABLES.SPECIES_CREATOR_FORM.querySelector('.reset-btn');
     
-}
-
-// Sets a tag into editing mode, allowing the user to changes to the value. Also enables event listeners for saving the changes.
-const editingState_Class = async (el) => {
-    let element = el.target;
-    let [key, v] = element.innerHTML.split(' ');
-    element.innerHTML = `<input type='text' value='' id='edit-${key}'>`;
-    element.querySelector('input').focus();
-    element.querySelector('input').value = v;
-    element.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            let newValue = element.querySelector('input').value;
-            if (isNaN(newValue) || newValue === '' || newValue == null || Number(newValue) < 0) {
-                element.innerHTML = `${key} ${v}`;
-            } else {
-                element.innerHTML = `${key} ${parseInt(Number(newValue))}`;
-            }
-        }
-    });
-}
-// handles collecting the data from the class changes and then sending to the server update function.
-async function saveNewClass() {
-    actualJobName = document.querySelector('#edit-newClass').value;
-    if (actualJobName === '' || actualJobName == null) {
-        alert('Please enter a name for the class');
-        return
-    }
-    let jobnameTemp = actualJobName.replaceAll(' ', '_');
-    let jobFromServer = await getCharacterClassFromServer(jobnameTemp);
-    if (jobFromServer !== undefined) {
-        alert('Class Name is not available! Please change it and try again.');
-        return
-    }
-    console.log("Reached here! Meaning the class name is available.")
-
-    let classDesc = document.querySelector('.newClass.class-desc textarea').value;
-    let stats = document.querySelectorAll('.newClass.class-stats-ul li');
-    let updatedStats = {};
-    stats.forEach(stat => {
-        let [key, value] = stat.innerHTML.split(' ');
-        updatedStats[key] = Number(value);
-    });
-
-    let updatedClass = {
-        name: jobnameTemp,
-        desc: classDesc,
-        stats: updatedStats,
-        stat_variability: 6, // Same across all classes for now.
+    switch (event.target) {
+        case createSpeciesBtn:
+            // This gets handled in the submit listener
+            break;
+        case cancelCreateBtn:
+            console.log('Canceling Creating a Species');
+            SPECIES.cancelCreateSpecies();
+            SPECIES.speciesHandleClassList();
+            break;
+        case resetFormBtn:
+            console.log('Resetting Form');
+            SPECIES.resetForm(VARIABLES.SPECIES_CREATOR_FORM);
+            break;
     }
 
-    createJob(updatedClass);
-    clearClassPrompt();
-}
-async function saveClassChanges(jobName) {
-    jobFromServer = await getCharacterClassFromServer(jobName);
+});
 
-    let updatedStats = {};
-    let className = document.querySelector(`.${jobName} h4`)?.innerHTML;
-    if (className === '' || className == null) {
-        className = document.querySelector(`.${jobName} > h4 > input`).value;
+// Handles events for the species list screen.
+VARIABLES.SPECIES_LIST_SCREEN.addEventListener('click', async function(event) {
+    let target = event.target;
+    if (target.classList.contains('btn-edit')) {
+        console.log('Editing Species');
+        await SPECIES.editSpecies(target.parentElement.parentElement.querySelector('h3').innerHTML);
+        SPECIES.speciesHandleClassList();
+    } else if (target.classList.contains('btn-delete-class')) {
+        console.log('Deleting Species');
+        await SERVER.deleteSpecie(target.parentElement.parentElement.querySelector('h3').innerHTML);
+        SPECIES.speciesHandleClassList();
+    } else if (target.id == 'createNewSpecies') {
+        console.log('Creating New Species');
+        SPECIES.showSpeciesCreator();
+    } else if (target.classList.contains('cancel-btn')) {
+        console.log('Going back to the Main Screen');
+        VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+        VARIABLES.MAIN_SCREEN.classList.remove('hidden');
     }
-    let classDesc = document.querySelector(`.${jobName} span > textarea`)?.value;
-    if (classDesc === '' || classDesc == null) {
-        classDesc = document.querySelector(`.${jobName} span`).innerHTML;
+});
+
+
+////////
+// CHARACTERS
+VARIABLES.CHARACTER_CREATOR_FORM.addEventListener('submit', function(event) {
+    // Don't want the page to refresh when the form is submitted.
+    console.log('Submitting Character Form');
+    CHARACTER.charactersHandleSubmit(event);
+});
+
+VARIABLES.CHARACTER_CREATOR_FORM.addEventListener('click', function(event) {
+    // Handle routing the clicks on the class creator form.
+    const createCharacterBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#createCharacter');
+    const cancelCreateBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('.cancel-btn');
+    const resetFormBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('.reset-btn');
+    const imageBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-image-edit');
+    switch (event.target) {
+        case createCharacterBtn:
+            // This gets handled in the submit listener
+            break;
+        case cancelCreateBtn:
+            console.log('Canceling Creating a Character');
+            CHARACTER.cancelCreateCharacters();
+            CHARACTER.characterHandleList();
+            break;
+        case resetFormBtn:
+            console.log('Resetting Form');
+            CHARACTER.resetForm(VARIABLES.CHARACTER_CREATOR_FORM);
+            break;
+        case imageBtn:
+            console.log('Changing Image');
+            CHARACTER.changeImage(imageBtn.querySelector('img'));
+            break;
     }
-    let stats = document.querySelectorAll(`.${jobName}.class-stats-ul li`);
-    stats.forEach(stat => {
-        let [key, value] = stat.innerHTML.split(' ');
-        updatedStats[key] = Number(value);
-    });
-    if (classDesc === '' || classDesc == null) {
-        classDesc = jobFromServer.desc;
+
+});
+
+// Handles events for the characters list screen.
+VARIABLES.CHARACTER_LIST_SCREEN.addEventListener('click', async function(event) {
+    let target = event.target;
+    if (target.classList.contains('btn-edit')) {
+        console.log('Editing Character');
+        await CHARACTER.editCharacters(target.parentElement.parentElement.querySelector('h3').id);
+        CHARACTER.characterHandleList();
+    } else if (target.classList.contains('btn-delete-class')) {
+        console.log('Deleting Character');
+        await SERVER.deleteCharacter(target.parentElement.parentElement.querySelector('h3').id);
+        CHARACTER.characterHandleList();
+    } else if (target.id == 'createNewCharacter') {
+        console.log('Creating New Character');
+        CHARACTER.showCharactersCreator();
+    } else if (target.classList.contains('cancel-btn')) {
+        console.log('Going back to the Main Screen');
+        VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+        VARIABLES.MAIN_SCREEN.classList.remove('hidden');
+    } else if (target.classList.contains('btn-select-character')) {
+        console.log('Selecting Character');
+        CHARACTER.selectCharacter(target.parentElement.parentElement.querySelector('h3').id);
     }
-    let updatedClass = {
-        name: (jobFromServer.name != className) ? className : jobFromServer.name,
-        desc: (jobFromServer.desc != classDesc) ? classDesc : jobFromServer.desc,
-        stats: updatedStats,
-        stat_variability: jobFromServer.stat_variability
+});
+
+// Handles image clc
+
+
+////////
+// OTHER
+
+// Handles the events for the main screen.
+VARIABLES.MAIN_SCREEN.addEventListener('click', async function(event) {
+    let target = event.target;
+    if (target.id == 'viewCharacters') {
+        console.log('Viewing Characters');
+        CHARACTER.characterHandleList();
+        CHARACTER.showAllCharacters();
+    } else if (target.id == 'viewClasses') {
+        console.log('Viewing Classes');
+        JOBS.jobHandleClassList();
+        JOBS.showAllClasses();
+    } else if (target.id == 'viewSpecies') {
+        console.log('Viewing Species');
+        SPECIES.speciesHandleClassList();
+        SPECIES.showAllSpecies();
+    } else if (target.id == 'generateNewCharacter') {
+        console.log('Generating New Character');
+        let newCharacter = await SERVER.getNewCharacterFromServer();
+        CHARACTER.selectCharacter(newCharacter.id)
     }
-    updatedClass.name = updatedClass.name.replaceAll(' ', '_');
-    updateJob(updatedClass)
+});
+
+async function toggleScroll() {
+    // Animates the scroll closing and opening
+    let scroll = document.querySelector('.scroll');
+    scroll.classList.remove('DONOTRUN') // Prevents the scroll from being opened when the page is loaded.
+    if (scroll.classList.contains('open')) {
+        toggleBtn.innerHTML = '<span>Open Scroll</span>';
+        scroll.classList.remove('open')
+    } else {
+        toggleBtn.innerHTML = '<span>Close Scroll</span>';;
+        scroll.classList.add('open')
+    }
+    await timer(2000);
+    return true;
+    // Returns true to tell whoever called it that the animation is done.
+}
+async function timer(ms) {
+    return new Promise(res => setTimeout(res, ms));
 }
 
-const displayMidCloseBtn = () => {
-    let midCloseBtn = document.querySelector('#mid-container-close-btn');
-    midCloseBtn.classList.remove('hidden');
-}
-const closeMidContainer = () => {
-    let midCloseBtn = document.querySelector('#mid-container-close-btn');
-    midCloseBtn.classList.add('hidden');
-}
+// Allows users to close and open the scroll, for fun.
+let toggleBtn = document.querySelector('#toggle-btn');
+toggleBtn.addEventListener('click', toggleScroll);
+
+// Generates a random character so there is something in the database.
+await SERVER.getNewCharacterFromServer();
+await CHARACTER.selectCharacter(0)

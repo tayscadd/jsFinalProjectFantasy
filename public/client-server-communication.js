@@ -1,4 +1,4 @@
-const baseURL = 'http://localhost:5500';
+const baseURL = window.location.origin;
 
 /////
 // Stuff having to do with talking to the server
