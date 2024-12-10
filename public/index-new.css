@@ -12,6 +12,10 @@ body {
     min-height: 100vh;
     height: 100vh;
     overflow: hidden;
+    background-image: url("./media/backgroundImage.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 main {
     min-height: 100vh;
@@ -23,7 +27,7 @@ main {
 main > div {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
     align-items: center;
 }
 .font-default {
@@ -54,17 +58,18 @@ main > div {
 .screen {
     width: 100%;
     overflow-y: auto;
+    padding-inline: 8px;
     overflow-x: hidden;
 }
 .main-screen {
     overflow: hidden;
     --padding-inline: 16px;
     width: calc(100% - var(--padding-inline) * 2);
-    height: calc(100% - 96px);
+    height: calc(100% - 72px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-block: 48px;
+    padding-block: 32px;
     padding-inline: var(--padding-inline);
 }
 .section-header {
@@ -314,7 +319,7 @@ hr.margin-b-half {
     place-items: center;
     padding-block: 50px;
     transition: grid-template-rows 2s ;
-    max-height: 80vh;
+    max-height: 70vh;
 }
 .scroll > div {
     overflow: hidden;
@@ -348,7 +353,7 @@ hr.margin-b-half {
     left: 0;
     transform: rotate(180deg);
 }
-.scroll.close:hover {
+.scroll:not(.open):hover {
     animation: wiggle 3s cubic-bezier(.36,.07,.19,.97) both;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
@@ -361,6 +366,60 @@ hr.margin-b-half {
    15% { transform: rotate(0deg); }
   100% { transform: rotate(0deg); }
 }
+
+div:has(.bigHeader) {
+    position: relative;
+}
+.bigHeader {
+    color: white;
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.25));
+    margin: 0;
+    z-index: 0;
+    position: absolute;
+    width: max-content;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    transition: top 5s ease-in-out;
+}
+.bigHeader:not(:has(+ .open)) {
+    top: -25%;
+    animation: customHeaderFadeIn 2s ease-in-out, headerWiggle 3s ease-in-out, headerWiggleLong 12s ease-in-out 3s infinite;
+}
+.bigHeader:has(+ .open) {
+    top: 50%;
+    animation: customHeaderFadeIn 2s ease-in-out, headerWiggle 3s ease-in-out, headerWiggleLong 12s ease-in-out 3s infinite;
+}
+@keyframes customHeaderFadeIn {
+    0% {
+        top: 50%;
+        opacity: 0;
+    }
+    100% {
+        top: -25%;
+        opacity: 1;
+    }
+}
+@keyframes headerWiggle {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    65% { transform: translate(-50%, -50%) rotate(5deg); }
+    85% { transform: translate(-50%, -50%) rotate(-5deg); }
+    90% { transform: translate(-50%, -50%) rotate(2deg); }
+    95% { transform: translate(-50%, -50%) rotate(-1deg); }
+    100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+@keyframes headerWiggleLong {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    90% { transform: translate(-50%, -50%) rotate(0deg); }
+    92% { transform: translate(-50%, -50%) rotate(5deg); }
+    95% { transform: translate(-50%, -50%) rotate(-5deg); }
+    98% { transform: translate(-50%, -50%) rotate(2deg); }
+    99% { transform: translate(-50%, -50%) rotate(-1deg); }
+    100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
 
 #chosen-character {
     display: flex;
@@ -549,4 +608,40 @@ hr.margin-b-half {
 }
 #images-ul > li:hover > img {
     transform: scale(1.1);
+}
+
+/// Scroll bar
+/* width */
+#main-screen {
+    scrollbar-color: black transparent !important;
+}
+#main-screen::-webkit-scrollbar {
+    width: 4px;
+}   
+/* Track */
+#main-screen::-webkit-scrollbar-track {
+    background: transparent;
+}
+/* Handle */
+#main-screen::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+}
+/* Handle on hover */
+#main-screen::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+.screen {
+    scrollbar-color: black transparent !important;
+}
+.screen::-webkit-scrollbar-track {
+    background: transparent;
+}
+.screen::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+}
+.screen::-webkit-scrollbar {
+    width: 4px;
+}
+.screen::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
 }
