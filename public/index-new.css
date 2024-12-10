@@ -348,6 +348,20 @@ hr.margin-b-half {
     left: 0;
     transform: rotate(180deg);
 }
+.scroll.close:hover {
+    animation: wiggle 3s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+   5% { transform: rotate(-5deg); }
+   10% { transform: rotate(5deg); }
+   15% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
 #chosen-character {
     display: flex;
     flex-direction: column;
