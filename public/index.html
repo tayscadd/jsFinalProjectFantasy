@@ -42,7 +42,6 @@
                             <h2 class="section-header font-styled">Create a Character</h2>
                             <hr class="margin-b-half"/>
                             <form class="any-form creation-form character-creator" id="character-creator-form" onsubmit="return false">
-                                <div class="error-div"><span class="error-span"></span></div>
                                 <div class="top-with-image">
                                     <div id="character-image-edit" class="image-btn-thingy"><img id="character-image" src="" alt="The character"></div>
                                     <div>
@@ -121,6 +120,7 @@
                                     <span class="grid-col-3"><input required type="number" id="character-level-input" name="character-level"></span>
                                 </label>
                                 <hr />
+                                <div class="error-div"><span class="error-span"></span></div>
                                 <button class="btn-default" id="createCharacter">Create Character</button>
                                 <div class="grid-col-2">
                                     <button type="button" class="btn-default btn-red cancel-btn">Cancel</button>
@@ -145,7 +145,6 @@
                             <h2 class="section-header font-styled">Create a Class</h2>
                             <hr class="margin-b-half"/>
                             <form class="any-form creation-form class-creator" id="class-creator-form" onsubmit="return false">
-                                <div class="error-div"><span class="error-span"></span></div>
                                 <label for="class-name">
                                     <span>Class Name</span>
                                     <input required type="text" id="class-name" name="class-name">
@@ -205,6 +204,7 @@
                                     <span class="grid-col-3"><input required type="number" id="stat-variability" class="stat-variability" name="stat-variability"></span>
                                 </label>
                                 <hr />
+                                <div class="error-div"><span class="error-span"></span></div>
                                 <button class="btn-default" id="createClass">Create Class</button>
                                 <div class="grid-col-2">
                                     <button type="button" class="btn-default btn-red cancel-btn">Cancel</button>
@@ -229,7 +229,6 @@
                             <h2 class="section-header font-styled">Create a Species</h2>
                             <hr class="margin-b-half"/>
                             <form class="any-form creation-form species-creator" id="species-creator-form" onsubmit="return false">
-                                <div class="error-div"><span class="error-span"></span></div>
                                 <label for="species-name">
                                     <span>Species Name</span>
                                     <input required type="text" id="species-name" name="species-name">
@@ -289,6 +288,7 @@
                                     <span class="grid-col-3"><input required type="number" id="stat-variability" name="stat-variability"></span>
                                 </label>
                                 <hr />
+                                <div class="error-div"><span class="error-span"></span></div>
                                 <button class="btn-default" id="createSpecies">Create Species</button>
                                 <div class="grid-col-2">
                                     <button type="button" class="btn-default btn-red cancel-btn">Cancel</button>

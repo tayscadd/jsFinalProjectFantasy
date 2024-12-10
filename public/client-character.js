@@ -121,7 +121,6 @@ function addToSelection(type, options) {
 }
 export async function selectCharacter(characterID) {
     let character = await SERVER.getCharacterFromServer(characterID);
-    console.log(character);
     let characterInfo = VARIABLES.CHOSEN_CHARACTER;
     let stats = '';
     for (const [key, value] of Object.entries(character.stats)) {

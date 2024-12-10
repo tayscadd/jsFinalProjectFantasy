@@ -282,7 +282,6 @@ function editCharacter(body) {
 function createCharacter(character) {
     try {
         let anyofthesamecharacters = CHARACTERS.findIndex(c => c.id === character.id)
-        console.log("Any of the same characters: ", anyofthesamecharacters);
         if (anyofthesamecharacters !== -1) {
             console.log("Character already exists");
             CHARACTERS[anyofthesamecharacters] = new Character(character, character.name );
@@ -310,18 +309,28 @@ async function deleteJob(name) {
     JOBS.splice(index, 1);
     return true;
 }
-function editJob(body) {
-    let index = JOBS.findIndex(j => j.name === body.JOB.name);
+function editJob(combined) {
+    console.log(combined)
+    let [new_1, old_1] = [combined.job, combined.oldjob]
+    //console.log("What got passed:", new_1);
+    let index = JOBS.findIndex(j => j.name === old_1.name);
     if (index === -1) {
         return undefined;
     } else {
-        JOBS[index] = body.JOB;
+        JOBS[index] = new_1;
         return true;
     }
 }
 function createJob(job) {
     try {
-        JOBS.push(job);
+        let index = JOBS.findIndex(j => j.name === job.name);
+        if (index == -1) {
+            console.log("Job doesn't exist, pushing it.");
+            JOBS.push(job);
+        } else {
+            console.log("Job (name) already exist, updating it.");
+            JOBS[index] = job;
+        }
         return true;
     } catch (e) {
         return false;
@@ -342,18 +351,28 @@ async function deleteSpecies(name) {
     SPECIES.splice(index, 1);
     return true;
 }
-function editSpecies(body) {
-    let index = SPECIES.findIndex(s => s.name === body.SPECIES.name);
+function editSpecies(combined) {
+    console.log(combined)
+    let [new_1, old_1] = [combined.specie, combined.oldspecie]
+    //console.log("What got passed:", new_1);
+    let index = SPECIES.findIndex(s => s.name === old_1.name);
     if (index === -1) {
         return undefined;
     } else {
-        SPECIES[index] = body.SPECIES;
+        SPECIES[index] = new_1;
         return true;
     }
 }
 function createSpecies(species) {
     try {
-        SPECIES.push(species);
+        let index = SPECIES.findIndex(s => s.name === species.name);
+        if (index == -1) {
+            console.log("Species doesn't exist, pushing it.");
+            SPECIES.push(species);
+        } else {
+            console.log("Species (name) already exist, updating it.");
+            SPECIES[index] = species;
+        }
         return true;
     } catch (e) {
         return false;

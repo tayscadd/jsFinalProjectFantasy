@@ -1,6 +1,8 @@
 import * as SERVER from './client-server-communication.js';
 import * as VARIABLES from './client-variables.js';
 
+let CURRENT_JOB = null; // Gets set when the user clicks the edit button on a class.
+
 //////
 // Functions that have to do with the job section, and would take up 
 // too much space in client.js
@@ -11,6 +13,7 @@ export async function jobHandleSubmit(event) {
     let emptyFields = Array.from(allFields).filter(field => field.value.length < 1);
     let classNameAvailable = null;
     classNameAvailable = await SERVER.getCharacterClassFromServer(VARIABLES.CLASS_CREATOR_FORM.querySelector('#class-name').value);
+    console.log(classNameAvailable)
     if (emptyFields.length <= 0 && classNameAvailable == undefined) {
         // If there are no empty fields, then we can create the class.
         let statsInputs = VARIABLES.CLASS_CREATOR_FORM.querySelectorAll('#class-stats label')
@@ -19,14 +22,13 @@ export async function jobHandleSubmit(event) {
             let key = label.querySelector('input').id;
             let v = Number(label.querySelector('input').value);
             stats[key] = Number(v)
-        }); 
+        });
         let job = {
             name: VARIABLES.CLASS_CREATOR_FORM.querySelector('#class-name').value,
             desc: VARIABLES.CLASS_CREATOR_FORM.querySelector('#class-description').value,
             stats: stats,
             stat_variability: Number(VARIABLES.CLASS_CREATOR_FORM.querySelector('#stat-variability').value),
         }
-        
         let response = await SERVER.createJob(job);
         if (response) {
             console.log('Class Created');
@@ -40,9 +42,47 @@ export async function jobHandleSubmit(event) {
             errorSpans.forEach(span => {
                 span.classList.add('shake');
                 span.innerHTML = 'Your chosen class name already exists. Try changing the name.';
+                errorSpanDisappear(span)
             });
         }
     }
+}
+export async function jobHandleSubmitEditVersion(event) {
+    event.preventDefault();
+    let allFields = VARIABLES.CLASS_CREATOR_FORM.querySelectorAll('input, textarea, select');
+    let emptyFields = Array.from(allFields).filter(field => field.value.length < 1)
+    if (emptyFields.length <= 0) {
+        // If there are no empty fields, then we can create the class.
+        let statsInputs = VARIABLES.CLASS_CREATOR_FORM.querySelectorAll('#class-stats label')
+        let stats = {};
+        statsInputs.forEach(label => {
+            let key = label.querySelector('input').id;
+            let v = Number(label.querySelector('input').value);
+            stats[key] = Number(v)
+        });
+        let job = {
+            name: VARIABLES.CLASS_CREATOR_FORM.querySelector('#class-name').value,
+            desc: VARIABLES.CLASS_CREATOR_FORM.querySelector('#class-description').value,
+            stats: stats,
+            stat_variability: Number(VARIABLES.CLASS_CREATOR_FORM.querySelector('#stat-variability').value),
+        }
+        let response = await SERVER.updateJob(job, CURRENT_JOB);
+        if (response) {
+            console.log('Class Edited');
+            resetForm(VARIABLES.CLASS_CREATOR_FORM);
+            CURRENT_JOB = null;
+            await jobHandleClassList();
+            showAllClasses();
+        } else {
+            console.error('Failed to edit class');
+        }
+    }
+}
+async function errorSpanDisappear(span) {
+    setTimeout(() => {
+        span.classList.remove('shake');
+        span.innerHTML = '';
+    }, 3000);
 }
 export function cancelCreateJob() {
     resetForm(VARIABLES.CLASS_CREATOR_FORM);
@@ -79,7 +119,7 @@ export async function jobHandleClassList() {
 
 export async function editJob(classname=null) {
     let job = await SERVER.getCharacterClassFromServer(classname);
-
+    CURRENT_JOB = (job == undefined) ? null : job;
     let allFields = VARIABLES.CLASS_CREATOR_FORM.querySelectorAll('input, textarea, select');
     let statsInputs = VARIABLES.CLASS_CREATOR_FORM.querySelectorAll('#class-stats label input');
     allFields.forEach(field => {
@@ -119,5 +159,6 @@ export function resetForm(form) {
             textarea.value = textarea.placeholder;
         }
     });
-
+    VARIABLES.CLASS_CREATOR_FORM.querySelector('#createClass').innerHTML = 'Create Class';
+    VARIABLES.CLASS_CREATOR_SCREEN.querySelector('h2').innerHTML = 'Create a Class';
 }

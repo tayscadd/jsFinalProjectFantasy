@@ -147,24 +147,27 @@ export async function deleteClass(name) {
     return response
 }
 // Saves changes to a class on the server.
-export async function updateJob(job) {
+export async function updateJob(job, oldjob) {
     console.log('Saving Class: ', job);
     let options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ JOB: job })
+        body: JSON.stringify({ JOBS_COMBINED: {job, oldjob} })
     }
     let response = await fetch(`${baseURL}/put/class/update`, options)
     .then(res => {
         if (!res.ok) {
             throw new Error('Failed to update class');
         }
+        return true
         // editClasses();
     }).catch(err => {
         console.error(err);
+        return false
     });
+    return response
 }
 // Creates a new class on the server.
 export async function createJob(job) {
@@ -219,29 +222,34 @@ export async function deleteSpecie(name) {
         if (!res.ok) {
             throw new Error('Failed to delete specie');
         }
-        editSpecies();
+        return true
     }).catch(err => {
         console.error(err);
+        return false
     });
+    return response
 }
 // Saves changes to a species on the server.
-export async function updateSpecie(specie) {
+export async function editSpecies(specie, oldspecie) {
     console.log('Saving Specie: ', specie);
     let options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ SPECIE: specie })
+        body: JSON.stringify({ SPECIES_COMBINED: {specie, oldspecie} })
     }
     let response = await fetch(`${baseURL}/put/specie/update`, options)
     .then(res => {
         if (!res.ok) {
             throw new Error('Failed to update specie');
         }
+        return true
     }).catch(err => {
         console.error(err);
+        return false
     });
+    return response
 }
 // Creates a new species on the server.
 export async function createSpecie(specie) {

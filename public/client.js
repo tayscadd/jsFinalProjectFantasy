@@ -10,7 +10,13 @@ import * as SPECIES from './client-species.js';
 // Handles the form submission for the class creator form.
 VARIABLES.CLASS_CREATOR_FORM.addEventListener('submit', function(event) {
     // Don't want the page to refresh when the form is submitted.
-    JOBS.jobHandleSubmit(event);
+    if (VARIABLES.CLASS_CREATOR_SCREEN.querySelector('h2').innerHTML === 'Create a Class') {
+        console.log('Regular Version')
+        JOBS.jobHandleSubmit(event);
+    } else {
+        console.log('Edit Version')
+        JOBS.jobHandleSubmitEditVersion(event);
+    }
 });
 
 VARIABLES.CLASS_CREATOR_FORM.addEventListener('click', function(event) {
@@ -41,6 +47,8 @@ VARIABLES.CLASS_LIST_SCREEN.addEventListener('click', async function(event) {
     let target = event.target;
     if (target.classList.contains('btn-edit')) {
         console.log('Editing Class');
+        VARIABLES.CLASS_CREATOR_FORM.querySelector('#createClass').innerHTML = 'Edit a Class';
+        VARIABLES.CLASS_CREATOR_SCREEN.querySelector('h2').innerHTML = 'Edit a Class';
         await JOBS.editJob(target.parentElement.parentElement.querySelector('h3').innerHTML);
         JOBS.jobHandleClassList();
     } else if (target.classList.contains('btn-delete-class')) {
@@ -65,7 +73,13 @@ VARIABLES.CLASS_LIST_SCREEN.addEventListener('click', async function(event) {
 // Handles the form submission for the class creator form.
 VARIABLES.SPECIES_CREATOR_FORM.addEventListener('submit', function(event) {
     // Don't want the page to refresh when the form is submitted.
-    SPECIES.speciesHandleSubmit(event);
+    if (VARIABLES.SPECIES_CREATOR_SCREEN.querySelector('h2').innerHTML === 'Create a Species') {
+        console.log('Regular Version')
+        SPECIES.speciesHandleSubmit(event);
+    } else {
+        console.log('Edit Version')
+        SPECIES.speciesHandleSubmitEditVersion(event);
+    }
 });
 
 VARIABLES.SPECIES_CREATOR_FORM.addEventListener('click', function(event) {
@@ -96,6 +110,8 @@ VARIABLES.SPECIES_LIST_SCREEN.addEventListener('click', async function(event) {
     let target = event.target;
     if (target.classList.contains('btn-edit')) {
         console.log('Editing Species');
+        VARIABLES.SPECIES_CREATOR_FORM.querySelector('#createSpecies').innerHTML = 'Edit a Species';
+        VARIABLES.SPECIES_CREATOR_SCREEN.querySelector('h2').innerHTML = 'Edit a Species';
         await SPECIES.editSpecies(target.parentElement.parentElement.querySelector('h3').innerHTML);
         SPECIES.speciesHandleClassList();
     } else if (target.classList.contains('btn-delete-class')) {

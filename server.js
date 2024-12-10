@@ -31,7 +31,6 @@ app.get('/get/portraits', async (req, res) => {
 app.get('/get/newcharacter', async (req, res) => {
     logRequest('GET', '/get/newcharacter');
     const character = await generateRandomCharacter();
-    console.log(`${character.name}, the ${character.species.name} ${character.job.name}. (ID: ${character.id})`);
     res.send({ character });
     confirmResponse('GET', '/get/newcharacter');
 })
@@ -43,7 +42,8 @@ app.get('/get/characters', async (req, res) => {
 });
 app.get('/get/character/:id', async (req, res) => {
     logRequest('GET', `/get/character/${req.params.id}`);
-    const character = await getCharacters().find(character => character.id === Number(req.params.id));
+    const characters = await getCharacters();
+    const character = characters.find(character => Number(character.id) === Number(req.params.id));
     res.send({ character });
     confirmResponse('GET', `/get/character/${req.params.id}`);
 });
@@ -78,18 +78,6 @@ app.get('/get/species/:name', (req, res) => {
 ////
 // Put Requests
 ////
-app.put('/put/class/update', (req, res) => {
-    logRequest('PUT', '/put/class/update');
-    let response = editJob(req.body);
-    if (response) {
-        res.send({ serverResponse: 'Class Updated' });
-        console.log('Success')
-    } else {
-        console.log('Failed')
-        res.status(400).send({ serverResponse: 'Failed to update class' });
-    }
-    confirmResponse('PUT', '/put/class/update');
-});
 app.put('/put/class/create', (req, res) => {
     logRequest('PUT', '/put/class/create');
     let response = createJob(req.body.JOB);
@@ -102,28 +90,15 @@ app.put('/put/class/create', (req, res) => {
     }
     confirmResponse('PUT', '/put/class/create');
 });
-app.put('/put/specie/update', (req, res) => {
-    logRequest('PUT', '/put/species/update');
-    let response = editSpecies(req.body);
-    if (response) {
-        res.send({ serverResponse: 'Species Updated' });
-        console.log('Success')
-    } else {
-        console.log('Failed')
-        res.status(400).send({ serverResponse: 'Failed to update Species' });
-    }
-    confirmResponse('PUT', '/put/species/update');
-});
 app.put('/put/specie/create', (req, res) => {
     logRequest('PUT', '/put/species/create');
-    console.log(req.body)
     let response = createSpecies(req.body.SPECIES);
     if (response) {
-        res.send({ serverResponse: 'Species Updated' });
+        res.send({ serverResponse: 'Species added' });
         console.log('Success')
     } else {
         console.log('Failed')
-        res.status(400).send({ serverResponse: 'Failed to update Species' });
+        res.status(400).send({ serverResponse: 'Failed to add Species' });
     }
     confirmResponse('PUT', '/put/species/create');
 });
@@ -139,6 +114,34 @@ app.put('/put/character/create', (req, res) => {
     }
     confirmResponse('PUT', '/put/character/create');
 });
+////
+// Update Requests
+////
+app.put('/put/specie/update', (req, res) => {
+    logRequest('PUT', '/put/specie/update');
+    let response = editSpecies(req.body.SPECIES_COMBINED);
+    if (response) {
+        res.send({ serverResponse: 'Species Updated' });
+        console.log('Success')
+    } else {
+        console.log('Failed')
+        res.status(400).send({ serverResponse: 'Failed to update Species' });
+    }
+    confirmResponse('PUT', '/put/specie/update');
+});
+app.put('/put/class/update', (req, res) => {
+    logRequest('PUT', '/put/class/update');
+    let response = editJob(req.body.JOBS_COMBINED);
+    if (response) {
+        res.send({ serverResponse: 'Class Updated' });
+        console.log('Success')
+    } else {
+        console.log('Failed')
+        res.status(400).send({ serverResponse: 'Failed to update class' });
+    }
+    confirmResponse('PUT', '/put/class/update');
+});
+//// The Character Update happens in the createCharacter function, so I didn't make a separate function for it.
 
 ////
 // Delete Requests
