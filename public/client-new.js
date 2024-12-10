@@ -126,7 +126,7 @@ VARIABLES.CHARACTER_CREATOR_FORM.addEventListener('click', function(event) {
     const createCharacterBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#createCharacter');
     const cancelCreateBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('.cancel-btn');
     const resetFormBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('.reset-btn');
-    
+    const imageBtn = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-image-edit');
     switch (event.target) {
         case createCharacterBtn:
             // This gets handled in the submit listener
@@ -140,10 +140,13 @@ VARIABLES.CHARACTER_CREATOR_FORM.addEventListener('click', function(event) {
             console.log('Resetting Form');
             CHARACTER.resetForm(VARIABLES.CHARACTER_CREATOR_FORM);
             break;
+        case imageBtn:
+            console.log('Changing Image');
+            CHARACTER.changeImage(imageBtn.querySelector('img'));
+            break;
     }
 
 });
-
 
 // Handles events for the characters list screen.
 VARIABLES.CHARACTER_LIST_SCREEN.addEventListener('click', async function(event) {
@@ -163,8 +166,14 @@ VARIABLES.CHARACTER_LIST_SCREEN.addEventListener('click', async function(event) 
         console.log('Going back to the Main Screen');
         VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
         VARIABLES.MAIN_SCREEN.classList.remove('hidden');
+    } else if (target.classList.contains('btn-select-character')) {
+        console.log('Selecting Character');
+        CHARACTER.selectCharacter(target.parentElement.parentElement.querySelector('h3').id);
     }
 });
+
+// Handles image clc
+
 
 ////////
 // OTHER
@@ -184,6 +193,10 @@ VARIABLES.MAIN_SCREEN.addEventListener('click', async function(event) {
         console.log('Viewing Species');
         SPECIES.speciesHandleClassList();
         SPECIES.showAllSpecies();
+    } else if (target.id == 'generateNewCharacter') {
+        console.log('Generating New Character');
+        let newCharacter = await SERVER.getNewCharacterFromServer();
+        CHARACTER.selectCharacter(newCharacter.id)
     }
 });
 
@@ -192,8 +205,10 @@ async function toggleScroll() {
     let scroll = document.querySelector('.scroll');
     scroll.classList.remove('DONOTRUN') // Prevents the scroll from being opened when the page is loaded.
     if (scroll.classList.contains('open')) {
+        toggleBtn.innerHTML = '<span>Open Scroll</span>';
         scroll.classList.remove('open')
     } else {
+        toggleBtn.innerHTML = '<span>Close Scroll</span>';;
         scroll.classList.add('open')
     }
     await timer(2000);
@@ -210,3 +225,4 @@ toggleBtn.addEventListener('click', toggleScroll);
 
 // Generates a random character so there is something in the database.
 await SERVER.getNewCharacterFromServer();
+await CHARACTER.selectCharacter(0)

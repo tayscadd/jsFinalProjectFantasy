@@ -22,8 +22,6 @@ export async function charactersHandleSubmit(event) {
     let species = await SERVER.getSpecieFromServer(VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-species').value);
     let img_src = VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-image').src;
     img_src = img_src.split(`${baseURL}/media/images/`)[1];
-
-    console.log('lvl', VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-level-input'))
     let character = {
         name: VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-name').value,
         history: VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-history').value,
@@ -31,14 +29,12 @@ export async function charactersHandleSubmit(event) {
         level: Number(VARIABLES.CHARACTER_CREATOR_FORM.querySelector('#character-level-input').value),
         job: job,
         species: species,
-        img: img_src,
+        image: img_src,
         stats: stats,
     }
-    console.log("The version I'm sending: ", character);
-    console.log("The version I got: ", charactersNameAvailable)
     let response = await SERVER.createCharacter(character);
     if (response) {
-        console.log('Characters Created');
+        console.log('Character Created');
         resetForm(VARIABLES.CHARACTER_CREATOR_FORM);
     } else {
         console.error('Failed to create character');
@@ -67,9 +63,10 @@ export async function characterHandleList() {
     allCharacters.forEach(characters => {
         let liContainer = document.createElement('li');;
         liContainer.innerHTML = `
-            <h3 id="${characters.id}">${characters.name}</h3>
+            <h3 id="${characters.id}">${characters.name}, a ${characters.species.name} ${characters.job.name}</h3>
             <p>${characters.history}</p>
             <div>
+                <button class="btn-default btn-small btn-select-character">Select Character</button>
                 <button class="btn-default btn-small btn-edit">Edit</button>
                 <button class="btn-default btn-small btn-red btn-delete-class">Delete</button>
             </div>
@@ -77,7 +74,6 @@ export async function characterHandleList() {
         classList.appendChild(liContainer);
     })
 }
-
 function addToSelection(type, options) {
     let selections = VARIABLES.CHARACTER_CREATOR_FORM.querySelectorAll('select');
     if (type == 'BOTH') {
@@ -122,6 +118,49 @@ function addToSelection(type, options) {
         }
     });
 
+}
+export async function selectCharacter(characterID) {
+    let character = await SERVER.getCharacterFromServer(characterID);
+    console.log(character);
+    let characterInfo = VARIABLES.CHOSEN_CHARACTER;
+    let stats = '';
+    for (const [key, value] of Object.entries(character.stats)) {
+        stats += `<li><span class='font-styled'>${String(key).charAt(0).toUpperCase() + String(key).slice(1)}:</span> ${value}</li>`
+        
+    }
+
+    characterInfo.innerHTML = '';
+    characterInfo.innerHTML = `
+        <div class="topPart">
+            <img src="${baseURL}/media/images/${character.image}" alt="${character.name}">
+            <div>
+                <div class="contain">
+                    <span class='chosen-character-sm-header'>Character Name</span>
+                    <h3 class='font-styled'>${character.name}</h3>
+                </div>
+                <div class="contain basic-info">
+                    <span class='chosen-character-sm-header'>Basic Info</span>
+                    <div class="">
+                        <p><span class="font-styled">Level:</span> ${character.level}</p>
+                        <p><span class="font-styled">Class:</span> ${character.job.name}</p>
+                        <p><span class="font-styled">Species:</span> ${character.species.name}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contain">
+            <span class='chosen-character-sm-header'>Character History</span>
+            <p>${character.history}</p>
+        </div>
+        <div class="contain">
+            <span class='chosen-character-sm-header'>Character Stats</span>
+            <ul class="character-chosen-stats">
+                ${stats}
+            </ul>
+        </div>
+    `;
+    VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+    VARIABLES.MAIN_SCREEN.classList.remove('hidden');
 }
 
 export async function editCharacters(charactersName=null){
@@ -188,4 +227,42 @@ export async function resetForm(form) {
     let species_options = await SERVER.getSpeciesFromServer();
     addToSelection("BOTH", [class_options, species_options]);
 
+}
+
+export async function changeImage(image) { 
+    if (VARIABLES.IMAGE_LIST_SCREEN.classList.contains('hidden')) {
+        showImages();
+    } else {
+        VARIABLES.CHARACTER_CREATOR_SCREEN.querySelector('img').src = image;
+        hideImages();
+    }
+}
+function hideImages() {
+    VARIABLES.IMAGE_LIST_SCREEN.removeEventListener('click', listOfImagesEventClick);
+    VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+    VARIABLES.CHARACTER_CREATOR_SCREEN.classList.remove('hidden');
+}
+
+async function showImages() {
+    VARIABLES.ALL_SCREENS.forEach(screen => {screen.classList.add('hidden')});
+    VARIABLES.IMAGE_LIST_SCREEN.classList.remove('hidden');
+    
+    let images = await SERVER.getCharacterPortraitsFromServer();
+    images.forEach(image => {
+        let li = document.createElement('li');
+        let img = document.createElement('img');
+        img.src = `${baseURL}/media/images/${image}`;
+        li.appendChild(img);
+        VARIABLES.IMAGE_LIST.appendChild(li);
+    });
+    VARIABLES.IMAGE_LIST_SCREEN.addEventListener('click', listOfImagesEventClick);
+}
+
+function listOfImagesEventClick(e) {
+    if (e.target.classList.contains('cancel-btn')) {
+        hideImages();
+    }
+    if (e.target.tagName == 'IMG') {
+        changeImage(e.target.src);
+    }
 }

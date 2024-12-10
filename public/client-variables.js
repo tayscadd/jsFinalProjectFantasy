@@ -16,5 +16,10 @@ export const CHARACTER_CREATOR_SCREEN = document.querySelector('#character-creat
 export const CHARACTER_LIST_SCREEN = document.querySelector('#character-list-screen');
 export const CHARACTER_LIST = document.querySelector('#characters-ul');
 
+export const IMAGE_LIST_SCREEN = document.querySelector('#images-list-screen');
+export const IMAGE_LIST = document.querySelector('#images-ul');
+
 export const ALL_SCREENS = document.querySelectorAll('.screen');
 export const MAIN_SCREEN = document.querySelector('#main-screen');
+
+export const CHOSEN_CHARACTER = document.querySelector('#chosen-character');

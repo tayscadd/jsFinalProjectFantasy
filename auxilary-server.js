@@ -285,10 +285,10 @@ function createCharacter(character) {
         console.log("Any of the same characters: ", anyofthesamecharacters);
         if (anyofthesamecharacters !== -1) {
             console.log("Character already exists");
-            CHARACTERS[anyofthesamecharacters] = character;
+            CHARACTERS[anyofthesamecharacters] = new Character(character, character.name );
         } else {
             console.log("Character doesn't exist");
-            CHARACTERS.push(character);
+            CHARACTERS.push(new Character(character, character.name));
         }
         return true;
     } catch (e) {

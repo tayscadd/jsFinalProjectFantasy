@@ -25,7 +25,7 @@ export async function logRequest(message) {
 // Gets a list of Portraits from the server (character photos)
 export async function getCharacterPortraitsFromServer() {
     let response = await fetch(`${baseURL}/get/portraits`).then(res => res.json());
-    return response.serverResponse;
+    return response.mediaFiles;
 }
 // Gets a specific portrait from the server. (prob not going to use)
 // export async function getCharacterPortraitFromServer(name) {
@@ -69,7 +69,6 @@ export async function getCharacterFromServer(id) {
     return response.character;
 }
 export async function createCharacter(character) {
-    console.log('Creating Character: ', character);
     let options = {
         method: 'PUT',
         headers: {

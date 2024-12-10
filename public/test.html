@@ -16,16 +16,20 @@
     </header>
     <main class="font-default">
         <div>
-            <div class="scroll open DONOTRUN">
+            <div class="scroll close DONOTRUN">
                 <img src="./media/scroll-topAsset_2.svg" alt="Top of the Scroll Image in the Background">
                 <div>
                     <div class="main-screen">
                         
-                        <div class="screen main-screen" id="main-screen">
+                        <div class="screen" id="main-screen">
                             <h2 class="section-header font-styled">Fantasy Character Creator</h2>
                             <hr class="margin-b-half"/>
+                            <h3 class="small-screen font-styled">Selected Character</h3>
+                            <div class="chosen-character" id="chosen-character">
 
+                            </div>
                             <hr/>
+                            <div class="grid-col-1 newCharacterBtnContainer"><button class="btn-default" id="generateNewCharacter">Generate a New Character</button></div>
                             <div class="grid-col-3">
                                 <button class="btn-default" id="viewCharacters">View Characters</button>
                                 <button class="btn-default" id="viewClasses">View Classes</button>
@@ -39,7 +43,7 @@
                             <form class="any-form creation-form character-creator" id="character-creator-form" onsubmit="return false">
                                 <div class="error-div"><span class="error-span"></span></div>
                                 <div class="top-with-image">
-                                    <img id="character-image" src="" alt="The character">
+                                    <div id="character-image-edit" class="image-btn-thingy"><img id="character-image" src="" alt="The character"></div>
                                     <div>
                                         <label id="character-id-tracker" for="character-name">
                                             <span id="">Character Name</span>
@@ -303,12 +307,24 @@
                                 <button type="button" class="btn-default btn-red cancel-btn">Cancel</button>
                             </div>
                         </div>
+
+                        <div class="screen images-list hidden" id="images-list-screen">
+                            <h2 class="section-header font-styled">Image Selection</h2>
+                            <hr class="margin-b-half"/>
+                            <ul id="images-ul">
+                                
+                            </ul>
+                            <hr />
+                            <div class="grid-col-1">
+                                <button type="button" class="btn-default btn-red cancel-btn">Cancel</button>
+                            </div>
+                        </div>
                         
                     </div>
                 </div>
                 <img src="./media/scroll-topAsset_2.svg" alt="Bottom of the Scroll Image in the Background">
             </div>
-            <button id="toggle-btn">Click me to toggle</button>
+            <button id="toggle-btn" class="btn-default"><span>Open Scroll</span></button>
         </div>
     </main>
     <footer>
