@@ -1,4 +1,7 @@
 
+![preview image](preview.png)
+
+
 **How To Run**
 - npm install
 - node server.js
@@ -11,6 +14,8 @@ ___Where Content (not created by me) was found___
 **Images**
 
 - [Images](https://www.reddit.com/r/rpg/comments/gpghyq/500_fantasy_character_portrait_icons/) : Free to use for what ever I want, AI generated
+- Background Image : AI generated and edited by me from [here](https://openart.ai).
+- The scroll rolling part thingies :  Created by me in illustrator.
 
 **Where I learned how to get a list of everything in a folder:**
 
