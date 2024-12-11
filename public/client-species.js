@@ -69,7 +69,7 @@ export async function speciesHandleSubmitEditVersion(event) {
             console.log('Species Created');
             resetForm(VARIABLES.SPECIES_CREATOR_FORM);
             CURRENT_SPECIES = null;
-            await jobHandleSpeciesList();
+            await speciesHandleClassList();
             showAllSpecies();
         } else {
             console.error('Failed to create species');

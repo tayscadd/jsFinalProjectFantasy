@@ -80,7 +80,7 @@ app.get('/get/species/:name', (req, res) => {
 ////
 app.put('/put/class/create', (req, res) => {
     logRequest('PUT', '/put/class/create');
-    let response = createJob(req.body.JOB);
+    let response = createJob(req.body.param1);
     if (response) {
         res.send({ serverResponse: 'Class Updated' });
         console.log('Success')
@@ -92,7 +92,7 @@ app.put('/put/class/create', (req, res) => {
 });
 app.put('/put/specie/create', (req, res) => {
     logRequest('PUT', '/put/species/create');
-    let response = createSpecies(req.body.SPECIES);
+    let response = createSpecies(req.body.param1);
     if (response) {
         res.send({ serverResponse: 'Species added' });
         console.log('Success')
@@ -104,7 +104,7 @@ app.put('/put/specie/create', (req, res) => {
 });
 app.put('/put/character/create', (req, res) => {
     logRequest('PUT', '/put/character/create');
-    let response = createCharacter(req.body.CHARACTER);
+    let response = createCharacter(req.body.param1);
     if (response) {
         res.send({ serverResponse: 'Character Created' });
         console.log('Success')
@@ -117,9 +117,9 @@ app.put('/put/character/create', (req, res) => {
 ////
 // Update Requests
 ////
-app.put('/put/specie/update', (req, res) => {
-    logRequest('PUT', '/put/specie/update');
-    let response = editSpecies(req.body.SPECIES_COMBINED);
+app.post('/post/specie/update', (req, res) => {
+    logRequest('POST', '/post/specie/update');
+    let response = editSpecies(req.body.param1);
     if (response) {
         res.send({ serverResponse: 'Species Updated' });
         console.log('Success')
@@ -127,11 +127,11 @@ app.put('/put/specie/update', (req, res) => {
         console.log('Failed')
         res.status(400).send({ serverResponse: 'Failed to update Species' });
     }
-    confirmResponse('PUT', '/put/specie/update');
+    confirmResponse('POST', '/post/specie/update');
 });
-app.put('/put/class/update', (req, res) => {
-    logRequest('PUT', '/put/class/update');
-    let response = editJob(req.body.JOBS_COMBINED);
+app.post('/post/class/update', (req, res) => {
+    logRequest('POST', '/post/class/update');
+    let response = editJob(req.body.param1);
     if (response) {
         res.send({ serverResponse: 'Class Updated' });
         console.log('Success')
@@ -139,7 +139,7 @@ app.put('/put/class/update', (req, res) => {
         console.log('Failed')
         res.status(400).send({ serverResponse: 'Failed to update class' });
     }
-    confirmResponse('PUT', '/put/class/update');
+    confirmResponse('POST', '/post/class/update');
 });
 //// The Character Update happens in the createCharacter function, so I didn't make a separate function for it.
 
@@ -147,8 +147,8 @@ app.put('/put/class/update', (req, res) => {
 // Delete Requests
 ////
 app.delete('/delete/class', async (req, res) => {
-    logRequest('DELETE', `/delete/class (${req.body.name})`);
-    let success = await deleteJob(req.body.name);
+    logRequest('DELETE', `/delete/class (${req.body.param1})`);
+    let success = await deleteJob(req.body.param1);
     if (!success) {
         res.status(400).send({ serverResponse: 'Failed to delete class' });
     } else {
@@ -157,8 +157,8 @@ app.delete('/delete/class', async (req, res) => {
     confirmResponse('DELETE', '/delete/class');
 });
 app.delete('/delete/specie', async (req, res) => {
-    logRequest('DELETE', `/delete/specie (${req.body.name})`);
-    let success = await deleteSpecies(req.body.name);
+    logRequest('DELETE', `/delete/specie (${req.body.param1})`);
+    let success = await deleteSpecies(req.body.param1);
     if (!success) {
         res.status(400).send({ serverResponse: 'Failed to delete species' });
     } else {
@@ -167,8 +167,8 @@ app.delete('/delete/specie', async (req, res) => {
     confirmResponse('DELETE', '/delete/specie');
 });
 app.delete('/delete/character', async (req, res) => {
-    logRequest('DELETE', `/delete/character (${req.body.id})`);
-    let success = await deleteCharacter(req.body.id);
+    logRequest('DELETE', `/delete/character (${req.body.param1})`);
+    let success = await deleteCharacter(req.body.param1);
     if (!success) {
         res.status(400).send({ serverResponse: 'Failed to delete character' });
     } else {
