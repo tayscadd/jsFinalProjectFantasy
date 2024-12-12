@@ -5,12 +5,14 @@ const { logRequest, confirmResponse, getMediaFiles, deleteCharacter, getCharacte
 
 
 // Variables that will be used throughout the server
-const port = 5500;
+const port = 5000;
 
 // Default actions for each request
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'));
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 ////
 // Get Requests
@@ -179,7 +181,7 @@ app.delete('/delete/character', async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Example app listening on port ${port}.`);
 });
 app.put('/log', (req, res) => {
     console.log("[CLIENT MESSAGE]: " , req.body.msg)
