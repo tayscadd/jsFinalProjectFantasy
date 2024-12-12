@@ -6,6 +6,7 @@ const { logRequest, confirmResponse, getMediaFiles, deleteCharacter, getCharacte
 
 // Variables that will be used throughout the server
 const port = 3000;
+let test = null;
 
 // Default actions for each request
 app.use(express.json())
