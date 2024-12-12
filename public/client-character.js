@@ -120,8 +120,12 @@ function addToSelection(type, options) {
 
 }
 export async function selectCharacter(characterID) {
-    let character = await SERVER.getCharacterFromServer(characterID);
+    let character = await SERVER.getCharacterFromServer(Number(characterID));
     let characterInfo = VARIABLES.CHOSEN_CHARACTER;
+    if (character === undefined) {
+        character = await SERVER.getNewCharacterFromServer();
+        return
+    }
     let stats = '';
     for (const [key, value] of Object.entries(character.stats)) {
         stats += `<li><span class='font-styled'>${String(key).charAt(0).toUpperCase() + String(key).slice(1)}:</span> ${value}</li>`

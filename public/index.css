@@ -16,9 +16,11 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    display: grid;
+    grid-template-rows: 1fr auto;
 }
 main {
-    min-height: 100vh;
+    height: 100%;
     max-height: 100vh;
     overflow: hidden;
     display: grid;
@@ -262,6 +264,7 @@ hr.margin-b-half {
 .creation-form .grid-col-3 > input,
 .creation-form select {
     all: unset;
+    cursor: pointer;    
     color: var(--black);
     padding: var(--padding);
     --border-width: 1px;
@@ -649,4 +652,19 @@ div:has(.bigHeader) {
 }
 .screen::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.5);
+}
+footer {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    color: white;
+    font-size: 0.8rem;
+}
+footer a {
+    all: unset;
+    cursor: pointer;
+    color: var(--white);
+    font-family: "Macondo";
+    font-size: 0.8rem;
+    text-decoration: underline;
 }

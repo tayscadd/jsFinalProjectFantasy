@@ -2,8 +2,18 @@ const fs = require('fs/promises');
 const path = require('path');
 const mediaDirectoryPath = path.join(__dirname, 'public/media/images');
 const classIcons = path.join(__dirname, 'public/media/classicons');
-
-
+const UNDEFINEDSTATS = {
+        strength: undefined,
+        intelligence: undefined,
+        wisdom: undefined,
+        agility: undefined,
+        speed: undefined,
+        dex: undefined,
+        magic: undefined,
+        luck: undefined,
+        charisma: undefined,
+        constitution: undefined,
+}
 /// Server Related Stuff
 async function getFiles(path) {
     let whatgetsreturned = await fs.readdir(path, function (err, files) {
@@ -100,7 +110,8 @@ class Species {
     }
 }
 class Character {
-    constructor(parameters, name) {
+    constructor(parameters, name, STATS=UNDEFINEDSTATS){
+        console.log("PARAMS: ", parameters)
         this.id = CHARACTER_ID;
         CHARACTER_ID++;
         this.job = parameters.job;
@@ -108,18 +119,18 @@ class Character {
         this.species = parameters.species;
         this.name = name;
         this.image = parameters.image;
-        this.level = mathRandom(0,10);
+        this.level = parameters.level ? parameters.level : mathRandom(1,10);
         this.stats = {
-            strength: this.setStat("strength", this.job, this.species) + this.level,
-            intelligence: this.setStat("intelligence", this.job, this.species) + this.level,
-            wisdom: this.setStat("wisdom", this.job, this.species) + this.level,
-            agility: this.setStat("agility", this.job, this.species) + this.level,
-            speed: this.setStat("speed", this.job, this.species) + this.level,
-            dex: this.setStat("dex", this.job, this.species) + this.level,
-            magic: this.setStat("magic", this.job, this.species) + this.level,
-            luck: this.setStat("luck", this.job, this.species) + this.level,
-            charisma: this.setStat("charisma", this.job, this.species) + this.level,
-            constitution: this.setStat("constitution", this.job, this.species) + this.level,
+            strength: STATS.strength !== undefined ? STATS.strength : this.setStat("strength", this.job, this.species) + this.level,
+            intelligence: STATS.intelligence !== undefined ? STATS.intelligence : this.setStat("intelligence", this.job, this.species) + this.level,
+            wisdom: STATS.wisdom !== undefined ? STATS.wisdom : this.setStat("wisdom", this.job, this.species) + this.level,
+            agility: STATS.agility !== undefined ? STATS.agility : this.setStat("agility", this.job, this.species) + this.level,
+            speed: STATS.speed !== undefined ? STATS.speed : this.setStat("speed", this.job, this.species) + this.level,
+            dex: STATS.dex !== undefined ? STATS.dex : this.setStat("dex", this.job, this.species) + this.level,
+            magic: STATS.magic !== undefined ? STATS.magic : this.setStat("magic", this.job, this.species) + this.level,
+            luck: STATS.luck !== undefined ? STATS.luck : this.setStat("luck", this.job, this.species) + this.level,
+            charisma: STATS.charisma !== undefined ? STATS.charisma : this.setStat("charisma", this.job, this.species) + this.level,
+            constitution: STATS.constitution !== undefined ? STATS.constitution : this.setStat("constitution", this.job, this.species) + this.level,
         }
     }
 
@@ -279,15 +290,16 @@ function editCharacter(body) {
         return true;
     }
 }
-function createCharacter(character) {
+async function createCharacter(recived_char) {
     try {
-        let anyofthesamecharacters = CHARACTERS.findIndex(c => c.id === character.id)
+        let anyofthesamecharacters = CHARACTERS.findIndex(c => c.id === recived_char.id)
         if (anyofthesamecharacters !== -1) {
             console.log("Character already exists");
-            CHARACTERS[anyofthesamecharacters] = new Character(character, character.name );
+            CHARACTERS[anyofthesamecharacters] = await Character.create(recived_char, recived_char.name, recived_char.stats);
+            console.log(CHARACTERS)
         } else {
             console.log("Character doesn't exist");
-            CHARACTERS.push(new Character(character, character.name));
+            CHARACTERS.push(new Character(recived_char, recived_char.name));
         }
         return true;
     } catch (e) {
